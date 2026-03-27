@@ -1,0 +1,907 @@
+---
+title: "Hierarchical PG Analyses: Primary, Sensitivity, and Severity Models"
+author: "OpenAI"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## Overview
+
+This notebook revises the original `code/analysis/logit.Rmd` workflow to better match the current analytic plan.
+
+### Primary decisions
+
+1. Use a **hierarchical logistic regression** to predict **PG vs HC**.
+2. Keep **moderators in Block 4** only.
+3. Treat **DOSPERT as domain-specific** in the primary model.
+4. **Exclude the gambling domain** from the primary model because of likely criterion overlap with PG status.
+5. Treat **investment/financial risk** cautiously. By default, it is excluded from the primary model, but a switch is included below in case you want to add it.
+6. Run two follow-up models:
+   - a **non-gambling DOSPERT composite** sensitivity model,
+   - an **exploratory gambling-domain** model.
+7. Run a **within-PG severity analysis** predicting GSAS total.
+
+## Packages
+
+```{r packages}
+# Core packages expected in most R installations used for this project
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+library(purrr)
+
+# Optional packages: if absent, the notebook falls back to base-R alternatives
+have_car      <- requireNamespace("car", quietly = TRUE)
+have_broom    <- requireNamespace("broom", quietly = TRUE)
+have_pscl     <- requireNamespace("pscl", quietly = TRUE)
+have_lmtest   <- requireNamespace("lmtest", quietly = TRUE)
+have_sandwich <- requireNamespace("sandwich", quietly = TRUE)
+
+if (have_broom) {
+  library(broom)
+}
+if (have_lmtest) {
+  library(lmtest)
+}
+if (have_sandwich) {
+  library(sandwich)
+}
+
+cat("Optional packages available:
+")
+cat("  car      =", have_car, "
+")
+cat("  broom    =", have_broom, "
+")
+cat("  pscl     =", have_pscl, "
+")
+cat("  lmtest   =", have_lmtest, "
+")
+cat("  sandwich =", have_sandwich, "
+")
+```
+
+## Project paths and data import
+
+```{r paths}
+# Helper: find the repo root whether knitting from the repo root or from code/analysis/
+find_project_root <- function() {
+  candidates <- unique(c(
+    normalizePath(getwd(), winslash = "/", mustWork = FALSE),
+    normalizePath(file.path(getwd(), ".."), winslash = "/", mustWork = FALSE),
+    normalizePath(file.path(getwd(), "..", ".."), winslash = "/", mustWork = FALSE)
+  ))
+
+  has_required_files <- function(path) {
+    file.exists(file.path(path, "derivatives", "scoring", "scoring-mastersheet.csv")) &&
+      file.exists(file.path(path, "derivatives", "scoring", "geo-variables.csv"))
+  }
+
+  hit <- candidates[vapply(candidates, has_required_files, logical(1))]
+  if (length(hit) == 0) {
+    stop("Could not locate the project root. Knit this file from the repo root or code/analysis/.")
+  }
+  hit[[1]]
+}
+
+project_root <- find_project_root()
+score_path   <- file.path(project_root, "derivatives", "scoring", "scoring-mastersheet.csv")
+geo_path     <- file.path(project_root, "derivatives", "scoring", "geo-variables.csv")
+
+df     <- read.csv(score_path)
+df_geo <- read.csv(geo_path)
+```
+
+## Analysis switches
+
+```{r switches}
+# Set to TRUE if you want to keep DOSPERT investment/financial risk in the primary model.
+include_investment_primary <- FALSE
+
+# Keep this TRUE to match the original repo's outlier handling for relative sensitivity.
+apply_original_reward_outlier_filter <- TRUE
+```
+
+## Helper functions
+
+```{r helpers}
+z_score <- function(x) as.numeric(scale(x))
+
+safe_confint <- function(model) {
+  out <- tryCatch(
+    suppressMessages(confint(model)),
+    error = function(e) suppressWarnings(confint.default(model))
+  )
+  out
+}
+
+make_or_table <- function(model) {
+  est <- coef(model)
+  ci  <- safe_confint(model)
+  data.frame(
+    term = names(est),
+    OR = exp(est),
+    CI_low = exp(ci[, 1]),
+    CI_high = exp(ci[, 2]),
+    row.names = NULL
+  )
+}
+
+make_formula <- function(outcome, block_terms, interactions = NULL) {
+  rhs <- c(unlist(block_terms), interactions)
+  stats::as.formula(paste(outcome, "~", paste(rhs, collapse = " + ")))
+}
+
+fit_block_models <- function(data, outcome, blocks, interactions = NULL, family_obj = binomial()) {
+  formulas <- list(
+    m1 = make_formula(outcome, blocks[1]),
+    m2 = make_formula(outcome, blocks[1:2]),
+    m3 = make_formula(outcome, blocks[1:3]),
+    m4 = make_formula(outcome, blocks[1:3], interactions = interactions)
+  )
+
+  models <- purrr::map(
+    formulas,
+    ~ glm(.x, data = data, family = family_obj, control = glm.control(maxit = 100))
+  )
+  list(models = models, formulas = formulas)
+}
+
+get_mcfadden <- function(model) {
+  # Avoid pscl::pR2() here. In models fit inside a helper, the stored call can
+  # retain a symbolic family argument, which causes update()-based null-model
+  # refits to fail even when the model itself fit successfully.
+  ll_full <- tryCatch(as.numeric(logLik(model)), error = function(e) NA_real_)
+
+  ll_null <- tryCatch({
+    nd <- model$null.deviance
+    if (is.null(nd) || is.na(nd)) stop("null.deviance unavailable")
+    -0.5 * nd
+  }, error = function(e) {
+    mf <- model.frame(model)
+    y  <- model.response(mf)
+    null_fit <- glm(y ~ 1, data = mf, family = model$family)
+    as.numeric(logLik(null_fit))
+  })
+
+  if (is.na(ll_full) || is.na(ll_null) || ll_null == 0) {
+    return(NA_real_)
+  }
+
+  1 - (ll_full / ll_null)
+}
+
+compare_block_models <- function(model_list) {
+  list(
+    block_1_vs_2 = anova(model_list$m1, model_list$m2, test = "Chisq"),
+    block_2_vs_3 = anova(model_list$m2, model_list$m3, test = "Chisq"),
+    block_3_vs_4 = anova(model_list$m3, model_list$m4, test = "Chisq"),
+    AIC = AIC(model_list$m1, model_list$m2, model_list$m3, model_list$m4),
+    BIC = BIC(model_list$m1, model_list$m2, model_list$m3, model_list$m4),
+    pR2 = tibble(
+      model = c("m1", "m2", "m3", "m4"),
+      McFadden = c(
+        get_mcfadden(model_list$m1),
+        get_mcfadden(model_list$m2),
+        get_mcfadden(model_list$m3),
+        get_mcfadden(model_list$m4)
+      )
+    )
+  )
+}
+
+manual_vif <- function(model) {
+  mm <- model.matrix(model)
+  assign_vec <- attr(mm, "assign")
+  term_labels <- attr(terms(model), "term.labels")
+
+  keep <- colnames(mm) != "(Intercept)"
+  mm <- mm[, keep, drop = FALSE]
+  assign_vec <- assign_vec[keep]
+
+  out <- lapply(seq_along(term_labels), function(i) {
+    cols_i <- which(assign_vec == i)
+    if (length(cols_i) == 0) return(NULL)
+
+    Xi <- mm[, cols_i, drop = FALSE]
+    Xo <- mm[, -cols_i, drop = FALSE]
+
+    if (ncol(Xi) == 1) {
+      fit <- lm(Xi[, 1] ~ Xo)
+      r2 <- summary(fit)$r.squared
+      data.frame(term = term_labels[i], VIF = 1 / (1 - r2))
+    } else {
+      r2_vec <- apply(Xi, 2, function(y) summary(lm(y ~ Xo))$r.squared)
+      data.frame(term = term_labels[i], VIF = max(1 / (1 - r2_vec)))
+    }
+  })
+
+  dplyr::bind_rows(out)
+}
+
+show_vif <- function(model) {
+  if (have_car) {
+    return(car::vif(model))
+  }
+  message("Package 'car' not installed; showing fallback VIF estimates.")
+  manual_vif(model)
+}
+
+show_vif_predictor <- function(model) {
+  if (have_car) {
+    return(car::vif(model, type = "predictor"))
+  }
+  message("Package 'car' not installed; showing fallback VIF estimates for model terms.")
+  manual_vif(model)
+}
+
+coef_table <- function(model, exponentiate = FALSE) {
+  if (have_broom) {
+    out <- broom::tidy(model, conf.int = TRUE, exponentiate = exponentiate)
+  } else {
+    sm <- summary(model)$coefficients
+    ci <- safe_confint(model)
+    out <- data.frame(
+      term = rownames(sm),
+      estimate = sm[, 1],
+      std.error = sm[, 2],
+      statistic = sm[, 3],
+      p.value = sm[, 4],
+      conf.low = ci[, 1],
+      conf.high = ci[, 2],
+      row.names = NULL
+    )
+    if (exponentiate) {
+      out$estimate  <- exp(out$estimate)
+      out$conf.low  <- exp(out$conf.low)
+      out$conf.high <- exp(out$conf.high)
+    }
+  }
+  out
+}
+
+robust_coef_test <- function(model) {
+  if (have_lmtest && have_sandwich) {
+    return(lmtest::coeftest(model, vcov = sandwich::vcovHC(model, type = "HC3")))
+  }
+  message("Packages 'lmtest' and/or 'sandwich' not installed; returning conventional coefficient table.")
+  summary(model)$coefficients
+}
+```
+
+## Preprocessing
+
+```{r preprocess}
+# Reward sensitivity composites from the original repo
+# (kept here so this notebook stays aligned with Cooper's prior workflow)
+df$bisbas_bas <- df$bisbas_drive + df$bisbas_fun_seek + df$bisbas_reward_res
+
+df$bisbas_bas_z_score <- z_score(df$bisbas_bas)
+df$spsrq_sr_z_score   <- z_score(df$spsrq_sr)
+df$rs_standard        <- df$bisbas_bas_z_score - df$spsrq_sr_z_score
+
+if (apply_original_reward_outlier_filter) {
+  q3 <- quantile(df$rs_standard, 0.75, na.rm = TRUE)
+  q1 <- quantile(df$rs_standard, 0.25, na.rm = TRUE)
+  iqr_value <- q3 - q1
+  upper_bound <- q3 + 1.5 * iqr_value
+  lower_bound <- q1 - 1.5 * iqr_value
+
+  df <- df[!(df$rs_standard >= upper_bound | df$rs_standard <= lower_bound) | is.na(df$rs_standard), ]
+}
+
+df$rew_composite <- df$spsrq_sr_z_score + df$bisbas_bas_z_score
+
+# Merge geographic/contextual variables
+# Note: use the geo file already in the repo rather than refetching ACS data.
+df <- df %>%
+  left_join(df_geo, by = "ResponseId") %>%
+  mutate(across(everything(), ~ ifelse(. == -999, NA, .)))
+
+# Define gambling groups cleanly
+# HC: non-gambling / minimal symptoms
+# PG: problem gambling criteria met
+# Mid: everyone in between, excluded from binary case-control analyses
+df <- df %>%
+  mutate(
+    pg_group = case_when(
+      sogs_total >= 1 & bbgs_total >= 4 & (mandf_casinog + mandf_onlineg) >= 1 ~ "PG",
+      sogs_total == 0 & bbgs_total <= 3 & (mandf_casinog + mandf_onlineg) == 0 ~ "HC",
+      TRUE ~ "Mid"
+    ),
+    pg_group = factor(pg_group, levels = c("HC", "Mid", "PG")),
+    PG = ifelse(pg_group == "PG", 1L, 0L),
+    gender = factor(demo_gender, levels = c(1, 2), labels = c("Male", "Female")),
+    income_median_split = factor(
+      ifelse(ses_tpi <= 2, "Below Median (<$40k)", "Above Median (≥$40k)"),
+      levels = c("Below Median (<$40k)", "Above Median (≥$40k)")
+    )
+  )
+```
+
+## Pairwise dataset helper
+
+```{r pairwise-helper}
+build_pairwise_dataset <- function(data, groups, positive_group) {
+  stopifnot(length(groups) == 2)
+  stopifnot(positive_group %in% groups)
+
+  data %>%
+    filter(pg_group %in% groups) %>%
+    drop_na(
+      pg_group, gender, income_median_split,
+      TotalCrime, unemployed, Gini,
+      demo_yrs,
+      rew_composite,
+      dospert_gam, dospert_inv, dospert_hs, dospert_soc, dospert_ethic, dospert_rec,
+      susd_depression, susd_mania, scared_total, uclal_total,
+      gsas_total
+    ) %>%
+    mutate(
+      CASE = ifelse(pg_group == positive_group, 1L, 0L),
+      contrast = paste0(groups[1], "_vs_", groups[2]),
+      positive_group = positive_group,
+      income = income_median_split,
+
+      # Context
+      z_crime = z_score(TotalCrime),
+      z_unemp = z_score(unemployed),
+      z_gini  = z_score(Gini),
+      z_neigh_disadv = rowMeans(cbind(z_crime, z_unemp, z_gini), na.rm = TRUE),
+
+      # Demographics
+      z_age = z_score(demo_yrs),
+
+      # Reward sensitivity
+      z_reward = z_score(rew_composite),
+
+      # DOSPERT domains
+      z_dospert_gam   = z_score(dospert_gam),
+      z_dospert_inv   = z_score(dospert_inv),
+      z_dospert_hs    = z_score(dospert_hs),
+      z_dospert_soc   = z_score(dospert_soc),
+      z_dospert_ethic = z_score(dospert_ethic),
+      z_dospert_rec   = z_score(dospert_rec),
+
+      # Clinical / social
+      z_depression = z_score(susd_depression),
+      z_mania      = z_score(susd_mania),
+      z_anxiety    = z_score(scared_total),
+      z_loneliness = z_score(uclal_total),
+
+      # Sensitivity variants
+      dospert_nongam_primary_raw = if (include_investment_primary) {
+        rowMeans(cbind(dospert_hs, dospert_soc, dospert_ethic, dospert_rec, dospert_inv), na.rm = FALSE)
+      } else {
+        rowMeans(cbind(dospert_hs, dospert_soc, dospert_ethic, dospert_rec), na.rm = FALSE)
+      },
+      z_dospert_nongam_comp = z_score(dospert_nongam_primary_raw),
+      z_dospert_total       = z_score(dospert_gam + dospert_inv + dospert_hs + dospert_soc + dospert_ethic + dospert_rec)
+    ) %>%
+    filter(gender %in% c("Male", "Female"))
+}
+
+run_logit_suite <- function(data, outcome = "CASE") {
+  primary_fit <- fit_block_models(
+    data = data,
+    outcome = outcome,
+    blocks = list(block_1, block_2_primary, block_3),
+    interactions = block_4_interactions,
+    family_obj = binomial(link = "logit")
+  )
+
+  comp_fit <- fit_block_models(
+    data = data,
+    outcome = outcome,
+    blocks = list(block_1, block_2_comp, block_3),
+    interactions = block_4_interactions,
+    family_obj = binomial(link = "logit")
+  )
+
+  explor_fit <- fit_block_models(
+    data = data,
+    outcome = outcome,
+    blocks = list(block_1, block_2_explor, block_3),
+    interactions = block_4_interactions,
+    family_obj = binomial(link = "logit")
+  )
+
+  total_fit <- fit_block_models(
+    data = data,
+    outcome = outcome,
+    blocks = list(block_1, block_2_total, block_3),
+    interactions = block_4_interactions,
+    family_obj = binomial(link = "logit")
+  )
+
+  list(
+    primary = primary_fit,
+    composite = comp_fit,
+    exploratory = explor_fit,
+    total = total_fit
+  )
+}
+
+suite_model_compare <- function(suite) {
+  tibble(
+    model = c(
+      "Primary: non-gambling domains",
+      "Sensitivity: non-gambling composite",
+      "Exploratory: add gambling domain",
+      "Optional: total DOSPERT"
+    ),
+    AIC = c(
+      AIC(suite$primary$models$m4),
+      AIC(suite$composite$models$m4),
+      AIC(suite$exploratory$models$m4),
+      AIC(suite$total$models$m4)
+    ),
+    BIC = c(
+      BIC(suite$primary$models$m4),
+      BIC(suite$composite$models$m4),
+      BIC(suite$exploratory$models$m4),
+      BIC(suite$total$models$m4)
+    ),
+    McFadden = c(
+      get_mcfadden(suite$primary$models$m4),
+      get_mcfadden(suite$composite$models$m4),
+      get_mcfadden(suite$exploratory$models$m4),
+      get_mcfadden(suite$total$models$m4)
+    )
+  )
+}
+```
+
+## Build the HC vs PG analytic dataset
+
+```{r build-binary-dataset}
+# Case-control comparison only: HC as 0, PG as 1.
+dat_binary <- build_pairwise_dataset(
+  data = df,
+  groups = c("HC", "PG"),
+  positive_group = "PG"
+) %>%
+  rename(PG_case = CASE) %>%
+  mutate(PG = PG_case)
+
+cat("Binary analytic N =", nrow(dat_binary), "\n")
+cat("HC =", sum(dat_binary$PG == 0), "\n")
+cat("PG =", sum(dat_binary$PG == 1), "\n")
+```
+
+## Inspect DOSPERT overlap before modeling
+
+```{r dospert-overlap}
+dospert_terms_for_corr <- c(
+  "z_dospert_hs", "z_dospert_soc", "z_dospert_ethic", "z_dospert_rec", "z_dospert_inv", "z_dospert_gam"
+)
+
+round(cor(dat_binary[, dospert_terms_for_corr], use = "pairwise.complete.obs"), 2)
+```
+
+## Define model blocks
+
+```{r define-blocks}
+primary_dospert_terms <- c("z_dospert_hs", "z_dospert_soc", "z_dospert_ethic", "z_dospert_rec")
+if (include_investment_primary) {
+  primary_dospert_terms <- c(primary_dospert_terms, "z_dospert_inv")
+}
+
+block_1 <- c("z_neigh_disadv", "gender", "z_age", "income")
+block_2_primary <- c("z_reward", primary_dospert_terms)
+block_2_comp    <- c("z_reward", "z_dospert_nongam_comp")
+block_2_total   <- c("z_reward", "z_dospert_total")
+block_2_explor  <- c("z_reward", primary_dospert_terms, "z_dospert_gam")
+block_3 <- c("z_depression", "z_mania", "z_anxiety", "z_loneliness")
+block_4_interactions <- c("z_reward:z_loneliness", "z_reward:z_age")
+```
+
+## Primary hierarchical logistic regression: non-gambling DOSPERT domains
+
+```{r fit-primary-logit}
+primary_fit <- fit_block_models(
+  data = dat_binary,
+  outcome = "PG",
+  blocks = list(block_1, block_2_primary, block_3),
+  interactions = block_4_interactions,
+  family_obj = binomial(link = "logit")
+)
+
+m1_primary <- primary_fit$models$m1
+m2_primary <- primary_fit$models$m2
+m3_primary <- primary_fit$models$m3
+m4_primary <- primary_fit$models$m4
+```
+
+```{r compare-primary-logit}
+compare_primary <- compare_block_models(primary_fit$models)
+compare_primary$block_1_vs_2
+compare_primary$block_2_vs_3
+compare_primary$block_3_vs_4
+compare_primary$AIC
+compare_primary$BIC
+compare_primary$pR2
+```
+
+```{r primary-vif}
+# Main-effects VIF is the most interpretable first pass.
+show_vif(m3_primary)
+
+# For the interaction model, use predictor-level VIF when car is available.
+show_vif_predictor(m4_primary)
+```
+
+```{r primary-or-table}
+primary_or <- make_or_table(m4_primary)
+primary_or
+```
+
+```{r primary-robust-se}
+robust_coef_test(m4_primary)
+```
+
+```{r primary-clean-table}
+coef_table(m4_primary, exponentiate = TRUE) %>%
+  mutate(
+    across(c(estimate, conf.low, conf.high), ~ round(., 3)),
+    p.value = round(p.value, 3),
+    sig = case_when(
+      p.value < .001 ~ "***",
+      p.value < .01  ~ "**",
+      p.value < .05  ~ "*",
+      p.value < .10  ~ ".",
+      TRUE ~ ""
+    )
+  ) %>%
+  rename(OR = estimate, CI_low = conf.low, CI_high = conf.high) %>%
+  kable()
+```
+
+## Sensitivity model: non-gambling DOSPERT composite
+
+```{r fit-composite-logit}
+comp_fit <- fit_block_models(
+  data = dat_binary,
+  outcome = "PG",
+  blocks = list(block_1, block_2_comp, block_3),
+  interactions = block_4_interactions,
+  family_obj = binomial(link = "logit")
+)
+
+m4_comp <- comp_fit$models$m4
+compare_comp <- compare_block_models(comp_fit$models)
+compare_comp$block_1_vs_2
+compare_comp$block_2_vs_3
+compare_comp$block_3_vs_4
+compare_comp$AIC
+compare_comp$pR2
+```
+
+## Exploratory model: add the gambling domain back in
+
+```{r fit-exploratory-gambling-domain}
+explor_fit <- fit_block_models(
+  data = dat_binary,
+  outcome = "PG",
+  blocks = list(block_1, block_2_explor, block_3),
+  interactions = block_4_interactions,
+  family_obj = binomial(link = "logit")
+)
+
+m4_explor <- explor_fit$models$m4
+compare_explor <- compare_block_models(explor_fit$models)
+compare_explor$block_1_vs_2
+compare_explor$block_2_vs_3
+compare_explor$block_3_vs_4
+compare_explor$AIC
+compare_explor$pR2
+```
+
+## Optional comparison: total DOSPERT instead of domains
+
+```{r fit-total-dospert-model}
+total_fit <- fit_block_models(
+  data = dat_binary,
+  outcome = "PG",
+  blocks = list(block_1, block_2_total, block_3),
+  interactions = block_4_interactions,
+  family_obj = binomial(link = "logit")
+)
+
+m4_total <- total_fit$models$m4
+compare_total <- compare_block_models(total_fit$models)
+compare_total$AIC
+compare_total$pR2
+```
+
+## Compare final models side by side
+
+```{r final-model-comparison}
+model_compare <- tibble(
+  model = c(
+    "Primary: non-gambling domains",
+    "Sensitivity: non-gambling composite",
+    "Exploratory: add gambling domain",
+    "Optional: total DOSPERT"
+  ),
+  AIC = c(
+    AIC(m4_primary),
+    AIC(m4_comp),
+    AIC(m4_explor),
+    AIC(m4_total)
+  ),
+  BIC = c(
+    BIC(m4_primary),
+    BIC(m4_comp),
+    BIC(m4_explor),
+    BIC(m4_total)
+  ),
+  McFadden = c(
+    get_mcfadden(m4_primary),
+    get_mcfadden(m4_comp),
+    get_mcfadden(m4_explor),
+    get_mcfadden(m4_total)
+  )
+)
+
+model_compare %>%
+  mutate(across(where(is.numeric), ~ round(., 3))) %>%
+  kable()
+```
+
+## Predicted probabilities for the primary interaction model
+
+```{r predicted-probabilities-primary}
+newdat_primary <- expand.grid(
+  z_neigh_disadv = 0,
+  gender = levels(dat_binary$gender)[1],
+  income = levels(dat_binary$income)[1],
+  z_age = c(-1, 0, 1),
+  z_reward = c(-1, 0, 1),
+  z_depression = 0,
+  z_mania = 0,
+  z_anxiety = 0,
+  z_loneliness = c(-1, 0, 1)
+)
+
+# Add DOSPERT terms at the mean for prediction.
+for (term in primary_dospert_terms) {
+  newdat_primary[[term]] <- 0
+}
+
+newdat_primary$pred_prob <- predict(m4_primary, newdata = newdat_primary, type = "response")
+newdat_primary
+```
+
+```{r interaction-plot-primary}
+newdat_primary %>%
+  filter(z_age == 0) %>%
+  mutate(
+    Reward = factor(z_reward, labels = c("Low (-1 SD)", "Mean", "High (+1 SD)")),
+    Loneliness = factor(z_loneliness, labels = c("Low (-1 SD)", "Mean", "High (+1 SD)"))
+  ) %>%
+  ggplot(aes(x = Reward, y = pred_prob, group = Loneliness, color = Loneliness)) +
+  geom_point(size = 3) +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+  labs(
+    x = "Reward sensitivity",
+    y = "Predicted P(PG)",
+    color = "Loneliness",
+    title = "Primary model: Reward sensitivity × loneliness"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+## Additional pairwise comparison: HC vs Mid
+
+```{r build-hc-mid-dataset}
+dat_hc_mid <- build_pairwise_dataset(
+  data = df,
+  groups = c("HC", "Mid"),
+  positive_group = "Mid"
+)
+
+cat("HC vs Mid analytic N =", nrow(dat_hc_mid), "\n")
+cat("HC =", sum(dat_hc_mid$CASE == 0), "\n")
+cat("Mid =", sum(dat_hc_mid$CASE == 1), "\n")
+```
+
+```{r fit-hc-mid-suite}
+hc_mid_suite <- run_logit_suite(dat_hc_mid, outcome = "CASE")
+```
+
+```{r compare-hc-mid-primary}
+compare_hc_mid_primary <- compare_block_models(hc_mid_suite$primary$models)
+compare_hc_mid_primary$block_1_vs_2
+compare_hc_mid_primary$block_2_vs_3
+compare_hc_mid_primary$block_3_vs_4
+compare_hc_mid_primary$AIC
+compare_hc_mid_primary$BIC
+compare_hc_mid_primary$pR2
+```
+
+```{r compare-hc-mid-models}
+suite_model_compare(hc_mid_suite) %>%
+  mutate(across(where(is.numeric), ~ round(., 3))) %>%
+  kable()
+```
+
+```{r hc-mid-primary-or-table}
+coef_table(hc_mid_suite$primary$models$m4, exponentiate = TRUE) %>%
+  mutate(
+    across(c(estimate, conf.low, conf.high), ~ round(., 3)),
+    p.value = round(p.value, 3),
+    sig = case_when(
+      p.value < .001 ~ "***",
+      p.value < .01  ~ "**",
+      p.value < .05  ~ "*",
+      p.value < .10  ~ ".",
+      TRUE ~ ""
+    )
+  ) %>%
+  rename(OR = estimate, CI_low = conf.low, CI_high = conf.high) %>%
+  kable()
+```
+
+## Additional pairwise comparison: Mid vs PG
+
+```{r build-mid-pg-dataset}
+dat_mid_pg <- build_pairwise_dataset(
+  data = df,
+  groups = c("Mid", "PG"),
+  positive_group = "PG"
+)
+
+cat("Mid vs PG analytic N =", nrow(dat_mid_pg), "\n")
+cat("Mid =", sum(dat_mid_pg$CASE == 0), "\n")
+cat("PG =", sum(dat_mid_pg$CASE == 1), "\n")
+```
+
+```{r fit-mid-pg-suite}
+mid_pg_suite <- run_logit_suite(dat_mid_pg, outcome = "CASE")
+```
+
+```{r compare-mid-pg-primary}
+compare_mid_pg_primary <- compare_block_models(mid_pg_suite$primary$models)
+compare_mid_pg_primary$block_1_vs_2
+compare_mid_pg_primary$block_2_vs_3
+compare_mid_pg_primary$block_3_vs_4
+compare_mid_pg_primary$AIC
+compare_mid_pg_primary$BIC
+compare_mid_pg_primary$pR2
+```
+
+```{r compare-mid-pg-models}
+suite_model_compare(mid_pg_suite) %>%
+  mutate(across(where(is.numeric), ~ round(., 3))) %>%
+  kable()
+```
+
+```{r mid-pg-primary-or-table}
+coef_table(mid_pg_suite$primary$models$m4, exponentiate = TRUE) %>%
+  mutate(
+    across(c(estimate, conf.low, conf.high), ~ round(., 3)),
+    p.value = round(p.value, 3),
+    sig = case_when(
+      p.value < .001 ~ "***",
+      p.value < .01  ~ "**",
+      p.value < .05  ~ "*",
+      p.value < .10  ~ ".",
+      TRUE ~ ""
+    )
+  ) %>%
+  rename(OR = estimate, CI_low = conf.low, CI_high = conf.high) %>%
+  kable()
+```
+
+## Secondary analysis: severity within PG only
+
+```{r build-pg-severity-dataset}
+dat_pg <- df %>%
+  filter(pg_group == "PG") %>%
+  drop_na(
+    gender, income_median_split,
+    TotalCrime, unemployed, Gini,
+    demo_yrs,
+    rew_composite,
+    dospert_gam, dospert_inv, dospert_hs, dospert_soc, dospert_ethic, dospert_rec,
+    susd_depression, susd_mania, scared_total, uclal_total,
+    gsas_total
+  ) %>%
+  mutate(
+    income = income_median_split,
+    z_crime = z_score(TotalCrime),
+    z_unemp = z_score(unemployed),
+    z_gini  = z_score(Gini),
+    z_neigh_disadv = rowMeans(cbind(z_crime, z_unemp, z_gini), na.rm = TRUE),
+    z_age = z_score(demo_yrs),
+    z_reward = z_score(rew_composite),
+    z_dospert_gam   = z_score(dospert_gam),
+    z_dospert_inv   = z_score(dospert_inv),
+    z_dospert_hs    = z_score(dospert_hs),
+    z_dospert_soc   = z_score(dospert_soc),
+    z_dospert_ethic = z_score(dospert_ethic),
+    z_dospert_rec   = z_score(dospert_rec),
+    dospert_nongam_primary_raw = if (include_investment_primary) {
+      rowMeans(cbind(dospert_hs, dospert_soc, dospert_ethic, dospert_rec, dospert_inv), na.rm = FALSE)
+    } else {
+      rowMeans(cbind(dospert_hs, dospert_soc, dospert_ethic, dospert_rec), na.rm = FALSE)
+    },
+    z_dospert_nongam_comp = z_score(dospert_nongam_primary_raw),
+    z_depression = z_score(susd_depression),
+    z_mania      = z_score(susd_mania),
+    z_anxiety    = z_score(scared_total),
+    z_loneliness = z_score(uclal_total),
+    z_gsas_total = z_score(gsas_total)
+  ) %>%
+  filter(gender %in% c("Male", "Female"))
+
+cat("PG severity analytic N =", nrow(dat_pg), "\n")
+```
+
+```{r severity-block-models}
+# Severity models mirror the logistic structure, but the outcome is GSAS total.
+severity_formula_1 <- make_formula("gsas_total", list(block_1))
+severity_formula_2 <- make_formula("gsas_total", list(block_1, block_2_primary))
+severity_formula_3 <- make_formula("gsas_total", list(block_1, block_2_primary, block_3))
+severity_formula_4 <- make_formula("gsas_total", list(block_1, block_2_primary, block_3), interactions = block_4_interactions)
+
+s1 <- lm(severity_formula_1, data = dat_pg)
+s2 <- lm(severity_formula_2, data = dat_pg)
+s3 <- lm(severity_formula_3, data = dat_pg)
+s4 <- lm(severity_formula_4, data = dat_pg)
+```
+
+```{r severity-model-comparison}
+anova(s1, s2, s3, s4)
+AIC(s1, s2, s3, s4)
+BIC(s1, s2, s3, s4)
+summary(s4)
+```
+
+```{r severity-vif}
+show_vif(s3)
+show_vif_predictor(s4)
+```
+
+```{r severity-clean-table}
+coef_table(s4, exponentiate = FALSE) %>%
+  mutate(
+    across(c(estimate, std.error, conf.low, conf.high), ~ round(., 3)),
+    p.value = round(p.value, 3),
+    sig = case_when(
+      p.value < .001 ~ "***",
+      p.value < .01  ~ "**",
+      p.value < .05  ~ "*",
+      p.value < .10  ~ ".",
+      TRUE ~ ""
+    )
+  ) %>%
+  kable()
+```
+
+## Notes for interpretation
+
+```{r notes, echo=FALSE, results='asis'}
+cat(
+"\nSuggested read of this notebook:\n",
+"\n1. Start with the primary logistic model using non-gambling DOSPERT domains.\n",
+"\n2. Check whether Block 4 materially improves fit. If not, the main-effects model may be the cleaner result to report.\n",
+"\n3. Compare the primary model with the non-gambling composite and exploratory gambling-domain models.\n",
+"\n4. Treat the severity models as a different question: what predicts symptom burden among PG cases, not what distinguishes cases from controls.\n",
+"\n5. If investment/financial risk looks too gambling-adjacent, keep include_investment_primary = FALSE.\n"
+)
+```
