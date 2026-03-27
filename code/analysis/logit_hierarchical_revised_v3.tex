@@ -1,0 +1,1709 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Hierarchical PG Analyses: Primary, Sensitivity, and Severity Models},
+  pdfauthor={OpenAI},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Hierarchical PG Analyses: Primary, Sensitivity, and Severity
+Models}
+\author{OpenAI}
+\date{2026-03-20}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\subsection{Overview}\label{overview}
+
+This notebook revises the original \texttt{code/analysis/logit.Rmd}
+workflow to better match the current analytic plan.
+
+\subsubsection{Primary decisions}\label{primary-decisions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use a \textbf{hierarchical logistic regression} to predict \textbf{PG
+  vs HC}.
+\item
+  Keep \textbf{moderators in Block 4} only.
+\item
+  Treat \textbf{DOSPERT as domain-specific} in the primary model.
+\item
+  \textbf{Exclude the gambling domain} from the primary model because of
+  likely criterion overlap with PG status.
+\item
+  Treat \textbf{investment/financial risk} cautiously. By default, it is
+  excluded from the primary model, but a switch is included below in
+  case you want to add it.
+\item
+  Run two follow-up models:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    a \textbf{non-gambling DOSPERT composite} sensitivity model,
+  \item
+    an \textbf{exploratory gambling-domain} model.
+  \end{itemize}
+\item
+  Run a \textbf{within-PG severity analysis} predicting GSAS total.
+\end{enumerate}
+
+\subsection{Packages}\label{packages}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Core packages expected in most R installations used for this project}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(tidyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(knitr)}
+\FunctionTok{library}\NormalTok{(purrr)}
+
+\CommentTok{\# Optional packages: if absent, the notebook falls back to base{-}R alternatives}
+\NormalTok{have\_car      }\OtherTok{\textless{}{-}} \FunctionTok{requireNamespace}\NormalTok{(}\StringTok{"car"}\NormalTok{, }\AttributeTok{quietly =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{have\_broom    }\OtherTok{\textless{}{-}} \FunctionTok{requireNamespace}\NormalTok{(}\StringTok{"broom"}\NormalTok{, }\AttributeTok{quietly =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{have\_pscl     }\OtherTok{\textless{}{-}} \FunctionTok{requireNamespace}\NormalTok{(}\StringTok{"pscl"}\NormalTok{, }\AttributeTok{quietly =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{have\_lmtest   }\OtherTok{\textless{}{-}} \FunctionTok{requireNamespace}\NormalTok{(}\StringTok{"lmtest"}\NormalTok{, }\AttributeTok{quietly =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{have\_sandwich }\OtherTok{\textless{}{-}} \FunctionTok{requireNamespace}\NormalTok{(}\StringTok{"sandwich"}\NormalTok{, }\AttributeTok{quietly =} \ConstantTok{TRUE}\NormalTok{)}
+
+\ControlFlowTok{if}\NormalTok{ (have\_broom) \{}
+  \FunctionTok{library}\NormalTok{(broom)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{ (have\_lmtest) \{}
+  \FunctionTok{library}\NormalTok{(lmtest)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{ (have\_sandwich) \{}
+  \FunctionTok{library}\NormalTok{(sandwich)}
+\NormalTok{\}}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Optional packages available:}
+\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Optional packages available:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"  car      ="}\NormalTok{, have\_car, }\StringTok{"}
+\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   car      = TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"  broom    ="}\NormalTok{, have\_broom, }\StringTok{"}
+\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   broom    = TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"  pscl     ="}\NormalTok{, have\_pscl, }\StringTok{"}
+\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   pscl     = TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"  lmtest   ="}\NormalTok{, have\_lmtest, }\StringTok{"}
+\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   lmtest   = TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"  sandwich ="}\NormalTok{, have\_sandwich, }\StringTok{"}
+\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   sandwich = TRUE
+\end{verbatim}
+
+\subsection{Project paths and data
+import}\label{project-paths-and-data-import}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Helper: find the repo root whether knitting from the repo root or from code/analysis/}
+\NormalTok{find\_project\_root }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{() \{}
+\NormalTok{  candidates }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(}\FunctionTok{c}\NormalTok{(}
+    \FunctionTok{normalizePath}\NormalTok{(}\FunctionTok{getwd}\NormalTok{(), }\AttributeTok{winslash =} \StringTok{"/"}\NormalTok{, }\AttributeTok{mustWork =} \ConstantTok{FALSE}\NormalTok{),}
+    \FunctionTok{normalizePath}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(}\FunctionTok{getwd}\NormalTok{(), }\StringTok{".."}\NormalTok{), }\AttributeTok{winslash =} \StringTok{"/"}\NormalTok{, }\AttributeTok{mustWork =} \ConstantTok{FALSE}\NormalTok{),}
+    \FunctionTok{normalizePath}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(}\FunctionTok{getwd}\NormalTok{(), }\StringTok{".."}\NormalTok{, }\StringTok{".."}\NormalTok{), }\AttributeTok{winslash =} \StringTok{"/"}\NormalTok{, }\AttributeTok{mustWork =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{  ))}
+
+\NormalTok{  has\_required\_files }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(path) \{}
+    \FunctionTok{file.exists}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(path, }\StringTok{"derivatives"}\NormalTok{, }\StringTok{"scoring"}\NormalTok{, }\StringTok{"scoring{-}mastersheet.csv"}\NormalTok{)) }\SpecialCharTok{\&\&}
+      \FunctionTok{file.exists}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(path, }\StringTok{"derivatives"}\NormalTok{, }\StringTok{"scoring"}\NormalTok{, }\StringTok{"geo{-}variables.csv"}\NormalTok{))}
+\NormalTok{  \}}
+
+\NormalTok{  hit }\OtherTok{\textless{}{-}}\NormalTok{ candidates[}\FunctionTok{vapply}\NormalTok{(candidates, has\_required\_files, }\FunctionTok{logical}\NormalTok{(}\DecValTok{1}\NormalTok{))]}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(hit) }\SpecialCharTok{==} \DecValTok{0}\NormalTok{) \{}
+    \FunctionTok{stop}\NormalTok{(}\StringTok{"Could not locate the project root. Knit this file from the repo root or code/analysis/."}\NormalTok{)}
+\NormalTok{  \}}
+\NormalTok{  hit[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{\}}
+
+\NormalTok{project\_root }\OtherTok{\textless{}{-}} \FunctionTok{find\_project\_root}\NormalTok{()}
+\NormalTok{score\_path   }\OtherTok{\textless{}{-}} \FunctionTok{file.path}\NormalTok{(project\_root, }\StringTok{"derivatives"}\NormalTok{, }\StringTok{"scoring"}\NormalTok{, }\StringTok{"scoring{-}mastersheet.csv"}\NormalTok{)}
+\NormalTok{geo\_path     }\OtherTok{\textless{}{-}} \FunctionTok{file.path}\NormalTok{(project\_root, }\StringTok{"derivatives"}\NormalTok{, }\StringTok{"scoring"}\NormalTok{, }\StringTok{"geo{-}variables.csv"}\NormalTok{)}
+
+\NormalTok{df     }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(score\_path)}
+\NormalTok{df\_geo }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(geo\_path)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Analysis switches}\label{analysis-switches}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Set to TRUE if you want to keep DOSPERT investment/financial risk in the primary model.}
+\NormalTok{include\_investment\_primary }\OtherTok{\textless{}{-}} \ConstantTok{FALSE}
+
+\CommentTok{\# Keep this TRUE to match the original repo\textquotesingle{}s outlier handling for relative sensitivity.}
+\NormalTok{apply\_original\_reward\_outlier\_filter }\OtherTok{\textless{}{-}} \ConstantTok{TRUE}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Helper functions}\label{helper-functions}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{z\_score }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{scale}\NormalTok{(x))}
+
+\NormalTok{safe\_confint }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model) \{}
+\NormalTok{  out }\OtherTok{\textless{}{-}} \FunctionTok{tryCatch}\NormalTok{(}
+    \FunctionTok{suppressMessages}\NormalTok{(}\FunctionTok{confint}\NormalTok{(model)),}
+    \AttributeTok{error =} \ControlFlowTok{function}\NormalTok{(e) }\FunctionTok{suppressWarnings}\NormalTok{(}\FunctionTok{confint.default}\NormalTok{(model))}
+\NormalTok{  )}
+\NormalTok{  out}
+\NormalTok{\}}
+
+\NormalTok{make\_or\_table }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model) \{}
+\NormalTok{  est }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(model)}
+\NormalTok{  ci  }\OtherTok{\textless{}{-}} \FunctionTok{safe\_confint}\NormalTok{(model)}
+  \FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{term =} \FunctionTok{names}\NormalTok{(est),}
+    \AttributeTok{OR =} \FunctionTok{exp}\NormalTok{(est),}
+    \AttributeTok{CI\_low =} \FunctionTok{exp}\NormalTok{(ci[, }\DecValTok{1}\NormalTok{]),}
+    \AttributeTok{CI\_high =} \FunctionTok{exp}\NormalTok{(ci[, }\DecValTok{2}\NormalTok{]),}
+    \AttributeTok{row.names =} \ConstantTok{NULL}
+\NormalTok{  )}
+\NormalTok{\}}
+
+\NormalTok{make\_formula }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(outcome, block\_terms, }\AttributeTok{interactions =} \ConstantTok{NULL}\NormalTok{) \{}
+\NormalTok{  rhs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{unlist}\NormalTok{(block\_terms), interactions)}
+\NormalTok{  stats}\SpecialCharTok{::}\FunctionTok{as.formula}\NormalTok{(}\FunctionTok{paste}\NormalTok{(outcome, }\StringTok{"\textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(rhs, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{)))}
+\NormalTok{\}}
+
+\NormalTok{fit\_block\_models }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(data, outcome, blocks, }\AttributeTok{interactions =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{family\_obj =} \FunctionTok{binomial}\NormalTok{()) \{}
+\NormalTok{  formulas }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+    \AttributeTok{m1 =} \FunctionTok{make\_formula}\NormalTok{(outcome, blocks[}\DecValTok{1}\NormalTok{]),}
+    \AttributeTok{m2 =} \FunctionTok{make\_formula}\NormalTok{(outcome, blocks[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{]),}
+    \AttributeTok{m3 =} \FunctionTok{make\_formula}\NormalTok{(outcome, blocks[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{]),}
+    \AttributeTok{m4 =} \FunctionTok{make\_formula}\NormalTok{(outcome, blocks[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{], }\AttributeTok{interactions =}\NormalTok{ interactions)}
+\NormalTok{  )}
+
+\NormalTok{  models }\OtherTok{\textless{}{-}}\NormalTok{ purrr}\SpecialCharTok{::}\FunctionTok{map}\NormalTok{(}
+\NormalTok{    formulas,}
+    \SpecialCharTok{\textasciitilde{}} \FunctionTok{glm}\NormalTok{(.x, }\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{family =}\NormalTok{ family\_obj, }\AttributeTok{control =} \FunctionTok{glm.control}\NormalTok{(}\AttributeTok{maxit =} \DecValTok{100}\NormalTok{))}
+\NormalTok{  )}
+  \FunctionTok{list}\NormalTok{(}\AttributeTok{models =}\NormalTok{ models, }\AttributeTok{formulas =}\NormalTok{ formulas)}
+\NormalTok{\}}
+
+\NormalTok{get\_mcfadden }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model) \{}
+  \CommentTok{\# Avoid pscl::pR2() here. In models fit inside a helper, the stored call can}
+  \CommentTok{\# retain a symbolic family argument, which causes update(){-}based null{-}model}
+  \CommentTok{\# refits to fail even when the model itself fit successfully.}
+\NormalTok{  ll\_full }\OtherTok{\textless{}{-}} \FunctionTok{tryCatch}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{logLik}\NormalTok{(model)), }\AttributeTok{error =} \ControlFlowTok{function}\NormalTok{(e) }\ConstantTok{NA\_real\_}\NormalTok{)}
+
+\NormalTok{  ll\_null }\OtherTok{\textless{}{-}} \FunctionTok{tryCatch}\NormalTok{(\{}
+\NormalTok{    nd }\OtherTok{\textless{}{-}}\NormalTok{ model}\SpecialCharTok{$}\NormalTok{null.deviance}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(nd) }\SpecialCharTok{||} \FunctionTok{is.na}\NormalTok{(nd)) }\FunctionTok{stop}\NormalTok{(}\StringTok{"null.deviance unavailable"}\NormalTok{)}
+    \SpecialCharTok{{-}}\FloatTok{0.5} \SpecialCharTok{*}\NormalTok{ nd}
+\NormalTok{  \}, }\AttributeTok{error =} \ControlFlowTok{function}\NormalTok{(e) \{}
+\NormalTok{    mf }\OtherTok{\textless{}{-}} \FunctionTok{model.frame}\NormalTok{(model)}
+\NormalTok{    y  }\OtherTok{\textless{}{-}} \FunctionTok{model.response}\NormalTok{(mf)}
+\NormalTok{    null\_fit }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}} \DecValTok{1}\NormalTok{, }\AttributeTok{data =}\NormalTok{ mf, }\AttributeTok{family =}\NormalTok{ model}\SpecialCharTok{$}\NormalTok{family)}
+    \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{logLik}\NormalTok{(null\_fit))}
+\NormalTok{  \})}
+
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.na}\NormalTok{(ll\_full) }\SpecialCharTok{||} \FunctionTok{is.na}\NormalTok{(ll\_null) }\SpecialCharTok{||}\NormalTok{ ll\_null }\SpecialCharTok{==} \DecValTok{0}\NormalTok{) \{}
+    \FunctionTok{return}\NormalTok{(}\ConstantTok{NA\_real\_}\NormalTok{)}
+\NormalTok{  \}}
+
+  \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (ll\_full }\SpecialCharTok{/}\NormalTok{ ll\_null)}
+\NormalTok{\}}
+
+\NormalTok{compare\_block\_models }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model\_list) \{}
+  \FunctionTok{list}\NormalTok{(}
+    \AttributeTok{block\_1\_vs\_2 =} \FunctionTok{anova}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m1, model\_list}\SpecialCharTok{$}\NormalTok{m2, }\AttributeTok{test =} \StringTok{"Chisq"}\NormalTok{),}
+    \AttributeTok{block\_2\_vs\_3 =} \FunctionTok{anova}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m2, model\_list}\SpecialCharTok{$}\NormalTok{m3, }\AttributeTok{test =} \StringTok{"Chisq"}\NormalTok{),}
+    \AttributeTok{block\_3\_vs\_4 =} \FunctionTok{anova}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m3, model\_list}\SpecialCharTok{$}\NormalTok{m4, }\AttributeTok{test =} \StringTok{"Chisq"}\NormalTok{),}
+    \AttributeTok{AIC =} \FunctionTok{AIC}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m1, model\_list}\SpecialCharTok{$}\NormalTok{m2, model\_list}\SpecialCharTok{$}\NormalTok{m3, model\_list}\SpecialCharTok{$}\NormalTok{m4),}
+    \AttributeTok{BIC =} \FunctionTok{BIC}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m1, model\_list}\SpecialCharTok{$}\NormalTok{m2, model\_list}\SpecialCharTok{$}\NormalTok{m3, model\_list}\SpecialCharTok{$}\NormalTok{m4),}
+    \AttributeTok{pR2 =} \FunctionTok{tibble}\NormalTok{(}
+      \AttributeTok{model =} \FunctionTok{c}\NormalTok{(}\StringTok{"m1"}\NormalTok{, }\StringTok{"m2"}\NormalTok{, }\StringTok{"m3"}\NormalTok{, }\StringTok{"m4"}\NormalTok{),}
+      \AttributeTok{McFadden =} \FunctionTok{c}\NormalTok{(}
+        \FunctionTok{get\_mcfadden}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m1),}
+        \FunctionTok{get\_mcfadden}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m2),}
+        \FunctionTok{get\_mcfadden}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m3),}
+        \FunctionTok{get\_mcfadden}\NormalTok{(model\_list}\SpecialCharTok{$}\NormalTok{m4)}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  )}
+\NormalTok{\}}
+
+\NormalTok{manual\_vif }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model) \{}
+\NormalTok{  mm }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(model)}
+\NormalTok{  assign\_vec }\OtherTok{\textless{}{-}} \FunctionTok{attr}\NormalTok{(mm, }\StringTok{"assign"}\NormalTok{)}
+\NormalTok{  term\_labels }\OtherTok{\textless{}{-}} \FunctionTok{attr}\NormalTok{(}\FunctionTok{terms}\NormalTok{(model), }\StringTok{"term.labels"}\NormalTok{)}
+
+\NormalTok{  keep }\OtherTok{\textless{}{-}} \FunctionTok{colnames}\NormalTok{(mm) }\SpecialCharTok{!=} \StringTok{"(Intercept)"}
+\NormalTok{  mm }\OtherTok{\textless{}{-}}\NormalTok{ mm[, keep, drop }\OtherTok{=} \ConstantTok{FALSE}\NormalTok{]}
+\NormalTok{  assign\_vec }\OtherTok{\textless{}{-}}\NormalTok{ assign\_vec[keep]}
+
+\NormalTok{  out }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(}\FunctionTok{seq\_along}\NormalTok{(term\_labels), }\ControlFlowTok{function}\NormalTok{(i) \{}
+\NormalTok{    cols\_i }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(assign\_vec }\SpecialCharTok{==}\NormalTok{ i)}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(cols\_i) }\SpecialCharTok{==} \DecValTok{0}\NormalTok{) }\FunctionTok{return}\NormalTok{(}\ConstantTok{NULL}\NormalTok{)}
+
+\NormalTok{    Xi }\OtherTok{\textless{}{-}}\NormalTok{ mm[, cols\_i, drop }\OtherTok{=} \ConstantTok{FALSE}\NormalTok{]}
+\NormalTok{    Xo }\OtherTok{\textless{}{-}}\NormalTok{ mm[, }\SpecialCharTok{{-}}\NormalTok{cols\_i, drop }\OtherTok{=} \ConstantTok{FALSE}\NormalTok{]}
+
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{ncol}\NormalTok{(Xi) }\SpecialCharTok{==} \DecValTok{1}\NormalTok{) \{}
+\NormalTok{      fit }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Xi[, }\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Xo)}
+\NormalTok{      r2 }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(fit)}\SpecialCharTok{$}\NormalTok{r.squared}
+      \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{term =}\NormalTok{ term\_labels[i], }\AttributeTok{VIF =} \DecValTok{1} \SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ r2))}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{      r2\_vec }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(Xi, }\DecValTok{2}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(y) }\FunctionTok{summary}\NormalTok{(}\FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Xo))}\SpecialCharTok{$}\NormalTok{r.squared)}
+      \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{term =}\NormalTok{ term\_labels[i], }\AttributeTok{VIF =} \FunctionTok{max}\NormalTok{(}\DecValTok{1} \SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ r2\_vec)))}
+\NormalTok{    \}}
+\NormalTok{  \})}
+
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{bind\_rows}\NormalTok{(out)}
+\NormalTok{\}}
+
+\NormalTok{show\_vif }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model) \{}
+  \ControlFlowTok{if}\NormalTok{ (have\_car) \{}
+    \FunctionTok{return}\NormalTok{(car}\SpecialCharTok{::}\FunctionTok{vif}\NormalTok{(model))}
+\NormalTok{  \}}
+  \FunctionTok{message}\NormalTok{(}\StringTok{"Package \textquotesingle{}car\textquotesingle{} not installed; showing fallback VIF estimates."}\NormalTok{)}
+  \FunctionTok{manual\_vif}\NormalTok{(model)}
+\NormalTok{\}}
+
+\NormalTok{show\_vif\_predictor }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model) \{}
+  \ControlFlowTok{if}\NormalTok{ (have\_car) \{}
+    \FunctionTok{return}\NormalTok{(car}\SpecialCharTok{::}\FunctionTok{vif}\NormalTok{(model, }\AttributeTok{type =} \StringTok{"predictor"}\NormalTok{))}
+\NormalTok{  \}}
+  \FunctionTok{message}\NormalTok{(}\StringTok{"Package \textquotesingle{}car\textquotesingle{} not installed; showing fallback VIF estimates for model terms."}\NormalTok{)}
+  \FunctionTok{manual\_vif}\NormalTok{(model)}
+\NormalTok{\}}
+
+\NormalTok{coef\_table }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model, }\AttributeTok{exponentiate =} \ConstantTok{FALSE}\NormalTok{) \{}
+  \ControlFlowTok{if}\NormalTok{ (have\_broom) \{}
+\NormalTok{    out }\OtherTok{\textless{}{-}}\NormalTok{ broom}\SpecialCharTok{::}\FunctionTok{tidy}\NormalTok{(model, }\AttributeTok{conf.int =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{exponentiate =}\NormalTok{ exponentiate)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{    sm }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(model)}\SpecialCharTok{$}\NormalTok{coefficients}
+\NormalTok{    ci }\OtherTok{\textless{}{-}} \FunctionTok{safe\_confint}\NormalTok{(model)}
+\NormalTok{    out }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+      \AttributeTok{term =} \FunctionTok{rownames}\NormalTok{(sm),}
+      \AttributeTok{estimate =}\NormalTok{ sm[, }\DecValTok{1}\NormalTok{],}
+      \AttributeTok{std.error =}\NormalTok{ sm[, }\DecValTok{2}\NormalTok{],}
+      \AttributeTok{statistic =}\NormalTok{ sm[, }\DecValTok{3}\NormalTok{],}
+      \AttributeTok{p.value =}\NormalTok{ sm[, }\DecValTok{4}\NormalTok{],}
+      \AttributeTok{conf.low =}\NormalTok{ ci[, }\DecValTok{1}\NormalTok{],}
+      \AttributeTok{conf.high =}\NormalTok{ ci[, }\DecValTok{2}\NormalTok{],}
+      \AttributeTok{row.names =} \ConstantTok{NULL}
+\NormalTok{    )}
+    \ControlFlowTok{if}\NormalTok{ (exponentiate) \{}
+\NormalTok{      out}\SpecialCharTok{$}\NormalTok{estimate  }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(out}\SpecialCharTok{$}\NormalTok{estimate)}
+\NormalTok{      out}\SpecialCharTok{$}\NormalTok{conf.low  }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(out}\SpecialCharTok{$}\NormalTok{conf.low)}
+\NormalTok{      out}\SpecialCharTok{$}\NormalTok{conf.high }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(out}\SpecialCharTok{$}\NormalTok{conf.high)}
+\NormalTok{    \}}
+\NormalTok{  \}}
+\NormalTok{  out}
+\NormalTok{\}}
+
+\NormalTok{robust\_coef\_test }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model) \{}
+  \ControlFlowTok{if}\NormalTok{ (have\_lmtest }\SpecialCharTok{\&\&}\NormalTok{ have\_sandwich) \{}
+    \FunctionTok{return}\NormalTok{(lmtest}\SpecialCharTok{::}\FunctionTok{coeftest}\NormalTok{(model, }\AttributeTok{vcov =}\NormalTok{ sandwich}\SpecialCharTok{::}\FunctionTok{vcovHC}\NormalTok{(model, }\AttributeTok{type =} \StringTok{"HC3"}\NormalTok{)))}
+\NormalTok{  \}}
+  \FunctionTok{message}\NormalTok{(}\StringTok{"Packages \textquotesingle{}lmtest\textquotesingle{} and/or \textquotesingle{}sandwich\textquotesingle{} not installed; returning conventional coefficient table."}\NormalTok{)}
+  \FunctionTok{summary}\NormalTok{(model)}\SpecialCharTok{$}\NormalTok{coefficients}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Preprocessing}\label{preprocessing}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Reward sensitivity composites from the original repo}
+\CommentTok{\# (kept here so this notebook stays aligned with Cooper\textquotesingle{}s prior workflow)}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{bisbas\_bas }\OtherTok{\textless{}{-}}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{bisbas\_drive }\SpecialCharTok{+}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{bisbas\_fun\_seek }\SpecialCharTok{+}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{bisbas\_reward\_res}
+
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{bisbas\_bas\_z\_score }\OtherTok{\textless{}{-}} \FunctionTok{z\_score}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{bisbas\_bas)}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{spsrq\_sr\_z\_score   }\OtherTok{\textless{}{-}} \FunctionTok{z\_score}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{spsrq\_sr)}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{rs\_standard        }\OtherTok{\textless{}{-}}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{bisbas\_bas\_z\_score }\SpecialCharTok{{-}}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{spsrq\_sr\_z\_score}
+
+\ControlFlowTok{if}\NormalTok{ (apply\_original\_reward\_outlier\_filter) \{}
+\NormalTok{  q3 }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{rs\_standard, }\FloatTok{0.75}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  q1 }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{rs\_standard, }\FloatTok{0.25}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  iqr\_value }\OtherTok{\textless{}{-}}\NormalTok{ q3 }\SpecialCharTok{{-}}\NormalTok{ q1}
+\NormalTok{  upper\_bound }\OtherTok{\textless{}{-}}\NormalTok{ q3 }\SpecialCharTok{+} \FloatTok{1.5} \SpecialCharTok{*}\NormalTok{ iqr\_value}
+\NormalTok{  lower\_bound }\OtherTok{\textless{}{-}}\NormalTok{ q1 }\SpecialCharTok{{-}} \FloatTok{1.5} \SpecialCharTok{*}\NormalTok{ iqr\_value}
+
+\NormalTok{  df }\OtherTok{\textless{}{-}}\NormalTok{ df[}\SpecialCharTok{!}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{rs\_standard }\SpecialCharTok{\textgreater{}=}\NormalTok{ upper\_bound }\SpecialCharTok{|}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{rs\_standard }\SpecialCharTok{\textless{}=}\NormalTok{ lower\_bound) }\SpecialCharTok{|} \FunctionTok{is.na}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{rs\_standard), ]}
+\NormalTok{\}}
+
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{rew\_composite }\OtherTok{\textless{}{-}}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{spsrq\_sr\_z\_score }\SpecialCharTok{+}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{bisbas\_bas\_z\_score}
+
+\CommentTok{\# Merge geographic/contextual variables}
+\CommentTok{\# Note: use the geo file already in the repo rather than refetching ACS data.}
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(df\_geo, }\AttributeTok{by =} \StringTok{"ResponseId"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{everything}\NormalTok{(), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{ifelse}\NormalTok{(. }\SpecialCharTok{==} \SpecialCharTok{{-}}\DecValTok{999}\NormalTok{, }\ConstantTok{NA}\NormalTok{, .)))}
+
+\CommentTok{\# Define gambling groups cleanly}
+\CommentTok{\# HC: non{-}gambling / minimal symptoms}
+\CommentTok{\# PG: problem gambling criteria met}
+\CommentTok{\# Mid: everyone in between, excluded from binary case{-}control analyses}
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{pg\_group =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      sogs\_total }\SpecialCharTok{\textgreater{}=} \DecValTok{1} \SpecialCharTok{\&}\NormalTok{ bbgs\_total }\SpecialCharTok{\textgreater{}=} \DecValTok{4} \SpecialCharTok{\&}\NormalTok{ (mandf\_casinog }\SpecialCharTok{+}\NormalTok{ mandf\_onlineg) }\SpecialCharTok{\textgreater{}=} \DecValTok{1} \SpecialCharTok{\textasciitilde{}} \StringTok{"PG"}\NormalTok{,}
+\NormalTok{      sogs\_total }\SpecialCharTok{==} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ bbgs\_total }\SpecialCharTok{\textless{}=} \DecValTok{3} \SpecialCharTok{\&}\NormalTok{ (mandf\_casinog }\SpecialCharTok{+}\NormalTok{ mandf\_onlineg) }\SpecialCharTok{==} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"HC"}\NormalTok{,}
+      \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{"Mid"}
+\NormalTok{    ),}
+    \AttributeTok{pg\_group =} \FunctionTok{factor}\NormalTok{(pg\_group, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"HC"}\NormalTok{, }\StringTok{"Mid"}\NormalTok{, }\StringTok{"PG"}\NormalTok{)),}
+    \AttributeTok{PG =} \FunctionTok{ifelse}\NormalTok{(pg\_group }\SpecialCharTok{==} \StringTok{"PG"}\NormalTok{, }\DecValTok{1}\DataTypeTok{L}\NormalTok{, }\DecValTok{0}\DataTypeTok{L}\NormalTok{),}
+    \AttributeTok{gender =} \FunctionTok{factor}\NormalTok{(demo\_gender, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Male"}\NormalTok{, }\StringTok{"Female"}\NormalTok{)),}
+    \AttributeTok{income\_median\_split =} \FunctionTok{factor}\NormalTok{(}
+      \FunctionTok{ifelse}\NormalTok{(ses\_tpi }\SpecialCharTok{\textless{}=} \DecValTok{2}\NormalTok{, }\StringTok{"Below Median (\textless{}$40k)"}\NormalTok{, }\StringTok{"Above Median (≥$40k)"}\NormalTok{),}
+      \AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Below Median (\textless{}$40k)"}\NormalTok{, }\StringTok{"Above Median (≥$40k)"}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Build the HC vs PG analytic
+dataset}\label{build-the-hc-vs-pg-analytic-dataset}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Start from the case{-}control comparison only}
+\CommentTok{\# and require complete data on all variables needed downstream.}
+\NormalTok{dat\_binary }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(pg\_group }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"HC"}\NormalTok{, }\StringTok{"PG"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{drop\_na}\NormalTok{(}
+\NormalTok{    PG, gender, income\_median\_split,}
+\NormalTok{    TotalCrime, unemployed, Gini,}
+\NormalTok{    demo\_yrs,}
+\NormalTok{    rew\_composite,}
+\NormalTok{    dospert\_gam, dospert\_inv, dospert\_hs, dospert\_soc, dospert\_ethic, dospert\_rec,}
+\NormalTok{    susd\_depression, susd\_mania, scared\_total, uclal\_total,}
+\NormalTok{    gsas\_total}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{income =}\NormalTok{ income\_median\_split,}
+
+    \CommentTok{\# Context}
+    \AttributeTok{z\_crime =} \FunctionTok{z\_score}\NormalTok{(TotalCrime),}
+    \AttributeTok{z\_unemp =} \FunctionTok{z\_score}\NormalTok{(unemployed),}
+    \AttributeTok{z\_gini  =} \FunctionTok{z\_score}\NormalTok{(Gini),}
+    \AttributeTok{z\_neigh\_disadv =} \FunctionTok{rowMeans}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(z\_crime, z\_unemp, z\_gini), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+
+    \CommentTok{\# Demographics}
+    \AttributeTok{z\_age =} \FunctionTok{z\_score}\NormalTok{(demo\_yrs),}
+
+    \CommentTok{\# Reward sensitivity}
+    \AttributeTok{z\_reward =} \FunctionTok{z\_score}\NormalTok{(rew\_composite),}
+
+    \CommentTok{\# DOSPERT domains}
+    \AttributeTok{z\_dospert\_gam   =} \FunctionTok{z\_score}\NormalTok{(dospert\_gam),}
+    \AttributeTok{z\_dospert\_inv   =} \FunctionTok{z\_score}\NormalTok{(dospert\_inv),}
+    \AttributeTok{z\_dospert\_hs    =} \FunctionTok{z\_score}\NormalTok{(dospert\_hs),}
+    \AttributeTok{z\_dospert\_soc   =} \FunctionTok{z\_score}\NormalTok{(dospert\_soc),}
+    \AttributeTok{z\_dospert\_ethic =} \FunctionTok{z\_score}\NormalTok{(dospert\_ethic),}
+    \AttributeTok{z\_dospert\_rec   =} \FunctionTok{z\_score}\NormalTok{(dospert\_rec),}
+
+    \CommentTok{\# Clinical / social}
+    \AttributeTok{z\_depression =} \FunctionTok{z\_score}\NormalTok{(susd\_depression),}
+    \AttributeTok{z\_mania      =} \FunctionTok{z\_score}\NormalTok{(susd\_mania),}
+    \AttributeTok{z\_anxiety    =} \FunctionTok{z\_score}\NormalTok{(scared\_total),}
+    \AttributeTok{z\_loneliness =} \FunctionTok{z\_score}\NormalTok{(uclal\_total),}
+
+    \CommentTok{\# Sensitivity variants}
+    \AttributeTok{dospert\_nongam\_primary\_raw =} \ControlFlowTok{if}\NormalTok{ (include\_investment\_primary) \{}
+      \FunctionTok{rowMeans}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(dospert\_hs, dospert\_soc, dospert\_ethic, dospert\_rec, dospert\_inv), }\AttributeTok{na.rm =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+      \FunctionTok{rowMeans}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(dospert\_hs, dospert\_soc, dospert\_ethic, dospert\_rec), }\AttributeTok{na.rm =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{    \},}
+    \AttributeTok{z\_dospert\_nongam\_comp =} \FunctionTok{z\_score}\NormalTok{(dospert\_nongam\_primary\_raw),}
+    \AttributeTok{z\_dospert\_total       =} \FunctionTok{z\_score}\NormalTok{(dospert\_gam }\SpecialCharTok{+}\NormalTok{ dospert\_inv }\SpecialCharTok{+}\NormalTok{ dospert\_hs }\SpecialCharTok{+}\NormalTok{ dospert\_soc }\SpecialCharTok{+}\NormalTok{ dospert\_ethic }\SpecialCharTok{+}\NormalTok{ dospert\_rec)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(gender }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Male"}\NormalTok{, }\StringTok{"Female"}\NormalTok{))}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Binary analytic N ="}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(dat\_binary), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Binary analytic N = 603
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"HC ="}\NormalTok{, }\FunctionTok{sum}\NormalTok{(dat\_binary}\SpecialCharTok{$}\NormalTok{PG }\SpecialCharTok{==} \DecValTok{0}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## HC = 406
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"PG ="}\NormalTok{, }\FunctionTok{sum}\NormalTok{(dat\_binary}\SpecialCharTok{$}\NormalTok{PG }\SpecialCharTok{==} \DecValTok{1}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## PG = 197
+\end{verbatim}
+
+\subsection{Inspect DOSPERT overlap before
+modeling}\label{inspect-dospert-overlap-before-modeling}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dospert\_terms\_for\_corr }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"z\_dospert\_hs"}\NormalTok{, }\StringTok{"z\_dospert\_soc"}\NormalTok{, }\StringTok{"z\_dospert\_ethic"}\NormalTok{, }\StringTok{"z\_dospert\_rec"}\NormalTok{, }\StringTok{"z\_dospert\_inv"}\NormalTok{, }\StringTok{"z\_dospert\_gam"}
+\NormalTok{)}
+
+\FunctionTok{round}\NormalTok{(}\FunctionTok{cor}\NormalTok{(dat\_binary[, dospert\_terms\_for\_corr], }\AttributeTok{use =} \StringTok{"pairwise.complete.obs"}\NormalTok{), }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 z_dospert_hs z_dospert_soc z_dospert_ethic z_dospert_rec
+## z_dospert_hs            1.00          0.87            0.89          0.86
+## z_dospert_soc           0.87          1.00            0.89          0.87
+## z_dospert_ethic         0.89          0.89            1.00          0.88
+## z_dospert_rec           0.86          0.87            0.88          1.00
+## z_dospert_inv           0.87          0.84            0.89          0.84
+## z_dospert_gam           0.86          0.81            0.88          0.82
+##                 z_dospert_inv z_dospert_gam
+## z_dospert_hs             0.87          0.86
+## z_dospert_soc            0.84          0.81
+## z_dospert_ethic          0.89          0.88
+## z_dospert_rec            0.84          0.82
+## z_dospert_inv            1.00          0.85
+## z_dospert_gam            0.85          1.00
+\end{verbatim}
+
+\subsection{Define model blocks}\label{define-model-blocks}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{primary\_dospert\_terms }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"z\_dospert\_hs"}\NormalTok{, }\StringTok{"z\_dospert\_soc"}\NormalTok{, }\StringTok{"z\_dospert\_ethic"}\NormalTok{, }\StringTok{"z\_dospert\_rec"}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (include\_investment\_primary) \{}
+\NormalTok{  primary\_dospert\_terms }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(primary\_dospert\_terms, }\StringTok{"z\_dospert\_inv"}\NormalTok{)}
+\NormalTok{\}}
+
+\NormalTok{block\_1 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"z\_neigh\_disadv"}\NormalTok{, }\StringTok{"gender"}\NormalTok{, }\StringTok{"z\_age"}\NormalTok{, }\StringTok{"income"}\NormalTok{)}
+\NormalTok{block\_2\_primary }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"z\_reward"}\NormalTok{, primary\_dospert\_terms)}
+\NormalTok{block\_2\_comp    }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"z\_reward"}\NormalTok{, }\StringTok{"z\_dospert\_nongam\_comp"}\NormalTok{)}
+\NormalTok{block\_2\_total   }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"z\_reward"}\NormalTok{, }\StringTok{"z\_dospert\_total"}\NormalTok{)}
+\NormalTok{block\_2\_explor  }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"z\_reward"}\NormalTok{, primary\_dospert\_terms, }\StringTok{"z\_dospert\_gam"}\NormalTok{)}
+\NormalTok{block\_3 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"z\_depression"}\NormalTok{, }\StringTok{"z\_mania"}\NormalTok{, }\StringTok{"z\_anxiety"}\NormalTok{, }\StringTok{"z\_loneliness"}\NormalTok{)}
+\NormalTok{block\_4\_interactions }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"z\_reward:z\_loneliness"}\NormalTok{, }\StringTok{"z\_reward:z\_age"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Primary hierarchical logistic regression: non-gambling
+DOSPERT
+domains}\label{primary-hierarchical-logistic-regression-non-gambling-dospert-domains}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{primary\_fit }\OtherTok{\textless{}{-}} \FunctionTok{fit\_block\_models}\NormalTok{(}
+  \AttributeTok{data =}\NormalTok{ dat\_binary,}
+  \AttributeTok{outcome =} \StringTok{"PG"}\NormalTok{,}
+  \AttributeTok{blocks =} \FunctionTok{list}\NormalTok{(block\_1, block\_2\_primary, block\_3),}
+  \AttributeTok{interactions =}\NormalTok{ block\_4\_interactions,}
+  \AttributeTok{family\_obj =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link =} \StringTok{"logit"}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{m1\_primary }\OtherTok{\textless{}{-}}\NormalTok{ primary\_fit}\SpecialCharTok{$}\NormalTok{models}\SpecialCharTok{$}\NormalTok{m1}
+\NormalTok{m2\_primary }\OtherTok{\textless{}{-}}\NormalTok{ primary\_fit}\SpecialCharTok{$}\NormalTok{models}\SpecialCharTok{$}\NormalTok{m2}
+\NormalTok{m3\_primary }\OtherTok{\textless{}{-}}\NormalTok{ primary\_fit}\SpecialCharTok{$}\NormalTok{models}\SpecialCharTok{$}\NormalTok{m3}
+\NormalTok{m4\_primary }\OtherTok{\textless{}{-}}\NormalTok{ primary\_fit}\SpecialCharTok{$}\NormalTok{models}\SpecialCharTok{$}\NormalTok{m4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_primary }\OtherTok{\textless{}{-}} \FunctionTok{compare\_block\_models}\NormalTok{(primary\_fit}\SpecialCharTok{$}\NormalTok{models)}
+\NormalTok{compare\_primary}\SpecialCharTok{$}\NormalTok{block\_1\_vs\_2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec
+##   Resid. Df Resid. Dev Df Deviance  Pr(>Chi)    
+## 1       598     461.48                          
+## 2       593     330.92  5   130.56 < 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_primary}\SpecialCharTok{$}\NormalTok{block\_2\_vs\_3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec + z_depression + 
+##     z_mania + z_anxiety + z_loneliness
+##   Resid. Df Resid. Dev Df Deviance Pr(>Chi)
+## 1       593     330.92                     
+## 2       589     323.76  4   7.1623   0.1276
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_primary}\SpecialCharTok{$}\NormalTok{block\_3\_vs\_4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec + z_depression + 
+##     z_mania + z_anxiety + z_loneliness
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec + z_depression + 
+##     z_mania + z_anxiety + z_loneliness + z_reward:z_loneliness + 
+##     z_reward:z_age
+##   Resid. Df Resid. Dev Df Deviance Pr(>Chi)
+## 1       589     323.76                     
+## 2       587     323.73  2 0.027572   0.9863
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_primary}\SpecialCharTok{$}\NormalTok{AIC}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               df      AIC
+## model_list$m1  5 471.4761
+## model_list$m2 10 350.9179
+## model_list$m3 14 351.7556
+## model_list$m4 16 355.7280
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_primary}\SpecialCharTok{$}\NormalTok{BIC}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               df      BIC
+## model_list$m1  5 493.4857
+## model_list$m2 10 394.9371
+## model_list$m3 14 413.3824
+## model_list$m4 16 426.1587
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_primary}\SpecialCharTok{$}\NormalTok{pR2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 2
+##   model McFadden
+##   <chr>    <dbl>
+## 1 m1       0.394
+## 2 m2       0.566
+## 3 m3       0.575
+## 4 m4       0.575
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Main{-}effects VIF is the most interpretable first pass.}
+\FunctionTok{show\_vif}\NormalTok{(m3\_primary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  z_neigh_disadv          gender           z_age          income        z_reward 
+##        1.070151        1.096448        1.354786        1.143839        1.187206 
+##    z_dospert_hs   z_dospert_soc z_dospert_ethic   z_dospert_rec    z_depression 
+##        3.297218        3.132951        3.953858        3.368770        2.488972 
+##         z_mania       z_anxiety    z_loneliness 
+##        1.868839        2.441479        1.567703
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# For the interaction model, use predictor{-}level VIF when car is available.}
+\FunctionTok{show\_vif\_predictor}\NormalTok{(m4\_primary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        z_neigh_disadv                gender                 z_age 
+##              1.074663              1.099026              1.422397 
+##                income              z_reward          z_dospert_hs 
+##              1.150438              1.813630              3.335300 
+##         z_dospert_soc       z_dospert_ethic         z_dospert_rec 
+##              3.234834              4.063641              3.386353 
+##          z_depression               z_mania             z_anxiety 
+##              2.487735              1.864800              2.461009 
+##          z_loneliness z_reward:z_loneliness        z_age:z_reward 
+##              1.812564              1.534727              1.796107
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{primary\_or }\OtherTok{\textless{}{-}} \FunctionTok{make\_or\_table}\NormalTok{(m4\_primary)}
+\NormalTok{primary\_or}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                          term        OR    CI_low   CI_high
+## 1                 (Intercept) 0.2253591 0.1235863 0.3946867
+## 2              z_neigh_disadv 2.3778198 1.6017513 3.6227970
+## 3                genderFemale 0.4349035 0.2400470 0.7821119
+## 4                       z_age 0.5158152 0.3314370 0.7848159
+## 5  incomeAbove Median (≥$40k) 1.8691686 1.0274239 3.4101223
+## 6                    z_reward 1.8642888 1.1655527 3.0658637
+## 7                z_dospert_hs 0.8965777 0.4707921 1.6969311
+## 8               z_dospert_soc 1.6977236 0.8910648 3.2798679
+## 9             z_dospert_ethic 1.8127224 0.8677831 3.9091239
+## 10              z_dospert_rec 1.5040017 0.7721987 2.9560932
+## 11               z_depression 1.3601538 0.8362862 2.2232255
+## 12                    z_mania 1.3946314 0.8952682 2.1802998
+## 13                  z_anxiety 0.8495248 0.5253200 1.3467756
+## 14               z_loneliness 0.7693663 0.5124542 1.1322528
+## 15      z_reward:z_loneliness 0.9771782 0.6614101 1.4716419
+## 16             z_age:z_reward 1.0217849 0.6240658 1.7169608
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{robust\_coef\_test}\NormalTok{(m4\_primary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## z test of coefficients:
+## 
+##                             Estimate Std. Error z value  Pr(>|z|)    
+## (Intercept)                -1.490060   0.285878 -5.2122 1.866e-07 ***
+## z_neigh_disadv              0.866184   0.210992  4.1053 4.038e-05 ***
+## genderFemale               -0.832631   0.312475 -2.6646  0.007707 ** 
+## z_age                      -0.662007   0.220227 -3.0060  0.002647 ** 
+## incomeAbove Median (≥$40k)  0.625494   0.299067  2.0915  0.036484 *  
+## z_reward                    0.622880   0.254087  2.4514  0.014229 *  
+## z_dospert_hs               -0.109170   0.341591 -0.3196  0.749276    
+## z_dospert_soc               0.529288   0.402981  1.3134  0.189038    
+## z_dospert_ethic             0.594830   0.394699  1.5070  0.131799    
+## z_dospert_rec               0.408129   0.324190  1.2589  0.208059    
+## z_depression                0.307598   0.254336  1.2094  0.226503    
+## z_mania                     0.332630   0.229151  1.4516  0.146620    
+## z_anxiety                  -0.163078   0.259313 -0.6289  0.529425    
+## z_loneliness               -0.262188   0.228966 -1.1451  0.252170    
+## z_reward:z_loneliness      -0.023086   0.218048 -0.1059  0.915680    
+## z_age:z_reward              0.021551   0.264605  0.0814  0.935087    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{coef\_table}\NormalTok{(m4\_primary, }\AttributeTok{exponentiate =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(estimate, conf.low, conf.high), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{round}\NormalTok{(., }\DecValTok{3}\NormalTok{)),}
+    \AttributeTok{p.value =} \FunctionTok{round}\NormalTok{(p.value, }\DecValTok{3}\NormalTok{),}
+    \AttributeTok{sig =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}}\NormalTok{ .}\DecValTok{001} \SpecialCharTok{\textasciitilde{}} \StringTok{"***"}\NormalTok{,}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}}\NormalTok{ .}\DecValTok{01}  \SpecialCharTok{\textasciitilde{}} \StringTok{"**"}\NormalTok{,}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}}\NormalTok{ .}\DecValTok{05}  \SpecialCharTok{\textasciitilde{}} \StringTok{"*"}\NormalTok{,}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}}\NormalTok{ .}\DecValTok{10}  \SpecialCharTok{\textasciitilde{}} \StringTok{"."}\NormalTok{,}
+      \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{""}
+\NormalTok{    )}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{rename}\NormalTok{(}\AttributeTok{OR =}\NormalTok{ estimate, }\AttributeTok{CI\_low =}\NormalTok{ conf.low, }\AttributeTok{CI\_high =}\NormalTok{ conf.high) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.3333}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.0741}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1235}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1358}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.0988}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.0864}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.0988}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.0494}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+term
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+OR
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+std.error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+statistic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p.value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+CI\_low
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+CI\_high
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+(Intercept) & 0.225 & 0.2952541 & -5.0467048 & 0.000 & 0.124 & 0.395 &
+*** \\
+z\_neigh\_disadv & 2.378 & 0.2075683 & 4.1730070 & 0.000 & 1.602 & 3.623
+& *** \\
+genderFemale & 0.435 & 0.3003888 & -2.7718449 & 0.006 & 0.240 & 0.782 &
+** \\
+z\_age & 0.516 & 0.2187334 & -3.0265466 & 0.002 & 0.331 & 0.785 & ** \\
+incomeAbove Median (≥\$40k) & 1.869 & 0.3051323 & 2.0499101 & 0.040 &
+1.027 & 3.410 & * \\
+z\_reward & 1.864 & 0.2459459 & 2.5325878 & 0.011 & 1.166 & 3.066 & * \\
+z\_dospert\_hs & 0.897 & 0.3260246 & -0.3348531 & 0.738 & 0.471 & 1.697
+& \\
+z\_dospert\_soc & 1.698 & 0.3312334 & 1.5979316 & 0.110 & 0.891 & 3.280
+& \\
+z\_dospert\_ethic & 1.813 & 0.3828717 & 1.5536009 & 0.120 & 0.868 &
+3.909 & \\
+z\_dospert\_rec & 1.504 & 0.3413612 & 1.1955939 & 0.232 & 0.772 & 2.956
+& \\
+z\_depression & 1.360 & 0.2480763 & 1.2399325 & 0.215 & 0.836 & 2.223
+& \\
+z\_mania & 1.395 & 0.2262882 & 1.4699400 & 0.142 & 0.895 & 2.180 & \\
+z\_anxiety & 0.850 & 0.2391861 & -0.6818048 & 0.495 & 0.525 & 1.347 & \\
+z\_loneliness & 0.769 & 0.2015569 & -1.3008144 & 0.193 & 0.512 & 1.132
+& \\
+z\_reward:z\_loneliness & 0.977 & 0.2031707 & -0.1136297 & 0.910 & 0.661
+& 1.472 & \\
+z\_age:z\_reward & 1.022 & 0.2575313 & 0.0836829 & 0.933 & 0.624 & 1.717
+& \\
+\end{longtable}
+
+\subsection{Sensitivity model: non-gambling DOSPERT
+composite}\label{sensitivity-model-non-gambling-dospert-composite}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{comp\_fit }\OtherTok{\textless{}{-}} \FunctionTok{fit\_block\_models}\NormalTok{(}
+  \AttributeTok{data =}\NormalTok{ dat\_binary,}
+  \AttributeTok{outcome =} \StringTok{"PG"}\NormalTok{,}
+  \AttributeTok{blocks =} \FunctionTok{list}\NormalTok{(block\_1, block\_2\_comp, block\_3),}
+  \AttributeTok{interactions =}\NormalTok{ block\_4\_interactions,}
+  \AttributeTok{family\_obj =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link =} \StringTok{"logit"}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{m4\_comp }\OtherTok{\textless{}{-}}\NormalTok{ comp\_fit}\SpecialCharTok{$}\NormalTok{models}\SpecialCharTok{$}\NormalTok{m4}
+\NormalTok{compare\_comp }\OtherTok{\textless{}{-}} \FunctionTok{compare\_block\_models}\NormalTok{(comp\_fit}\SpecialCharTok{$}\NormalTok{models)}
+\NormalTok{compare\_comp}\SpecialCharTok{$}\NormalTok{block\_1\_vs\_2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_nongam_comp
+##   Resid. Df Resid. Dev Df Deviance  Pr(>Chi)    
+## 1       598     461.48                          
+## 2       596     332.39  2   129.09 < 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_comp}\SpecialCharTok{$}\NormalTok{block\_2\_vs\_3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_nongam_comp
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_nongam_comp + 
+##     z_depression + z_mania + z_anxiety + z_loneliness
+##   Resid. Df Resid. Dev Df Deviance Pr(>Chi)
+## 1       596     332.39                     
+## 2       592     325.89  4      6.5   0.1648
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_comp}\SpecialCharTok{$}\NormalTok{block\_3\_vs\_4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_nongam_comp + 
+##     z_depression + z_mania + z_anxiety + z_loneliness
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_nongam_comp + 
+##     z_depression + z_mania + z_anxiety + z_loneliness + z_reward:z_loneliness + 
+##     z_reward:z_age
+##   Resid. Df Resid. Dev Df Deviance Pr(>Chi)
+## 1       592     325.89                     
+## 2       590     325.84  2 0.052069   0.9743
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_comp}\SpecialCharTok{$}\NormalTok{AIC}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               df      AIC
+## model_list$m1  5 471.4761
+## model_list$m2  7 346.3892
+## model_list$m3 11 347.8892
+## model_list$m4 13 351.8372
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_comp}\SpecialCharTok{$}\NormalTok{pR2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 2
+##   model McFadden
+##   <chr>    <dbl>
+## 1 m1       0.394
+## 2 m2       0.564
+## 3 m3       0.572
+## 4 m4       0.572
+\end{verbatim}
+
+\subsection{Exploratory model: add the gambling domain back
+in}\label{exploratory-model-add-the-gambling-domain-back-in}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{explor\_fit }\OtherTok{\textless{}{-}} \FunctionTok{fit\_block\_models}\NormalTok{(}
+  \AttributeTok{data =}\NormalTok{ dat\_binary,}
+  \AttributeTok{outcome =} \StringTok{"PG"}\NormalTok{,}
+  \AttributeTok{blocks =} \FunctionTok{list}\NormalTok{(block\_1, block\_2\_explor, block\_3),}
+  \AttributeTok{interactions =}\NormalTok{ block\_4\_interactions,}
+  \AttributeTok{family\_obj =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link =} \StringTok{"logit"}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{m4\_explor }\OtherTok{\textless{}{-}}\NormalTok{ explor\_fit}\SpecialCharTok{$}\NormalTok{models}\SpecialCharTok{$}\NormalTok{m4}
+\NormalTok{compare\_explor }\OtherTok{\textless{}{-}} \FunctionTok{compare\_block\_models}\NormalTok{(explor\_fit}\SpecialCharTok{$}\NormalTok{models)}
+\NormalTok{compare\_explor}\SpecialCharTok{$}\NormalTok{block\_1\_vs\_2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec + z_dospert_gam
+##   Resid. Df Resid. Dev Df Deviance  Pr(>Chi)    
+## 1       598     461.48                          
+## 2       592     320.15  6   141.33 < 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_explor}\SpecialCharTok{$}\NormalTok{block\_2\_vs\_3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec + z_dospert_gam
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec + z_dospert_gam + 
+##     z_depression + z_mania + z_anxiety + z_loneliness
+##   Resid. Df Resid. Dev Df Deviance Pr(>Chi)
+## 1       592     320.15                     
+## 2       588     312.99  4   7.1553   0.1279
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_explor}\SpecialCharTok{$}\NormalTok{block\_3\_vs\_4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec + z_dospert_gam + 
+##     z_depression + z_mania + z_anxiety + z_loneliness
+## Model 2: PG ~ z_neigh_disadv + gender + z_age + income + z_reward + z_dospert_hs + 
+##     z_dospert_soc + z_dospert_ethic + z_dospert_rec + z_dospert_gam + 
+##     z_depression + z_mania + z_anxiety + z_loneliness + z_reward:z_loneliness + 
+##     z_reward:z_age
+##   Resid. Df Resid. Dev Df Deviance Pr(>Chi)
+## 1       588     312.99                     
+## 2       586     312.97  2 0.019501   0.9903
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_explor}\SpecialCharTok{$}\NormalTok{AIC}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               df      AIC
+## model_list$m1  5 471.4761
+## model_list$m2 11 342.1464
+## model_list$m3 15 342.9910
+## model_list$m4 17 346.9715
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_explor}\SpecialCharTok{$}\NormalTok{pR2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 2
+##   model McFadden
+##   <chr>    <dbl>
+## 1 m1       0.394
+## 2 m2       0.580
+## 3 m3       0.589
+## 4 m4       0.589
+\end{verbatim}
+
+\subsection{Optional comparison: total DOSPERT instead of
+domains}\label{optional-comparison-total-dospert-instead-of-domains}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{total\_fit }\OtherTok{\textless{}{-}} \FunctionTok{fit\_block\_models}\NormalTok{(}
+  \AttributeTok{data =}\NormalTok{ dat\_binary,}
+  \AttributeTok{outcome =} \StringTok{"PG"}\NormalTok{,}
+  \AttributeTok{blocks =} \FunctionTok{list}\NormalTok{(block\_1, block\_2\_total, block\_3),}
+  \AttributeTok{interactions =}\NormalTok{ block\_4\_interactions,}
+  \AttributeTok{family\_obj =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link =} \StringTok{"logit"}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{m4\_total }\OtherTok{\textless{}{-}}\NormalTok{ total\_fit}\SpecialCharTok{$}\NormalTok{models}\SpecialCharTok{$}\NormalTok{m4}
+\NormalTok{compare\_total }\OtherTok{\textless{}{-}} \FunctionTok{compare\_block\_models}\NormalTok{(total\_fit}\SpecialCharTok{$}\NormalTok{models)}
+\NormalTok{compare\_total}\SpecialCharTok{$}\NormalTok{AIC}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               df      AIC
+## model_list$m1  5 471.4761
+## model_list$m2  7 340.2009
+## model_list$m3 11 342.5183
+## model_list$m4 13 346.4688
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare\_total}\SpecialCharTok{$}\NormalTok{pR2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 2
+##   model McFadden
+##   <chr>    <dbl>
+## 1 m1       0.394
+## 2 m2       0.572
+## 3 m3       0.579
+## 4 m4       0.579
+\end{verbatim}
+
+\subsection{Compare final models side by
+side}\label{compare-final-models-side-by-side}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model\_compare }\OtherTok{\textless{}{-}} \FunctionTok{tibble}\NormalTok{(}
+  \AttributeTok{model =} \FunctionTok{c}\NormalTok{(}
+    \StringTok{"Primary: non{-}gambling domains"}\NormalTok{,}
+    \StringTok{"Sensitivity: non{-}gambling composite"}\NormalTok{,}
+    \StringTok{"Exploratory: add gambling domain"}\NormalTok{,}
+    \StringTok{"Optional: total DOSPERT"}
+\NormalTok{  ),}
+  \AttributeTok{AIC =} \FunctionTok{c}\NormalTok{(}
+    \FunctionTok{AIC}\NormalTok{(m4\_primary),}
+    \FunctionTok{AIC}\NormalTok{(m4\_comp),}
+    \FunctionTok{AIC}\NormalTok{(m4\_explor),}
+    \FunctionTok{AIC}\NormalTok{(m4\_total)}
+\NormalTok{  ),}
+  \AttributeTok{BIC =} \FunctionTok{c}\NormalTok{(}
+    \FunctionTok{BIC}\NormalTok{(m4\_primary),}
+    \FunctionTok{BIC}\NormalTok{(m4\_comp),}
+    \FunctionTok{BIC}\NormalTok{(m4\_explor),}
+    \FunctionTok{BIC}\NormalTok{(m4\_total)}
+\NormalTok{  ),}
+  \AttributeTok{McFadden =} \FunctionTok{c}\NormalTok{(}
+    \FunctionTok{get\_mcfadden}\NormalTok{(m4\_primary),}
+    \FunctionTok{get\_mcfadden}\NormalTok{(m4\_comp),}
+    \FunctionTok{get\_mcfadden}\NormalTok{(m4\_explor),}
+    \FunctionTok{get\_mcfadden}\NormalTok{(m4\_total)}
+\NormalTok{  )}
+\NormalTok{)}
+
+\NormalTok{model\_compare }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{where}\NormalTok{(is.numeric), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{round}\NormalTok{(., }\DecValTok{3}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrr@{}}
+\toprule\noalign{}
+model & AIC & BIC & McFadden \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Primary: non-gambling domains & 355.728 & 426.159 & 0.575 \\
+Sensitivity: non-gambling composite & 351.837 & 409.062 & 0.572 \\
+Exploratory: add gambling domain & 346.972 & 421.804 & 0.589 \\
+Optional: total DOSPERT & 346.469 & 403.694 & 0.579 \\
+\end{longtable}
+
+\subsection{Predicted probabilities for the primary interaction
+model}\label{predicted-probabilities-for-the-primary-interaction-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{newdat\_primary }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}
+  \AttributeTok{z\_neigh\_disadv =} \DecValTok{0}\NormalTok{,}
+  \AttributeTok{gender =} \FunctionTok{levels}\NormalTok{(dat\_binary}\SpecialCharTok{$}\NormalTok{gender)[}\DecValTok{1}\NormalTok{],}
+  \AttributeTok{income =} \FunctionTok{levels}\NormalTok{(dat\_binary}\SpecialCharTok{$}\NormalTok{income)[}\DecValTok{1}\NormalTok{],}
+  \AttributeTok{z\_age =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{),}
+  \AttributeTok{z\_reward =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{),}
+  \AttributeTok{z\_depression =} \DecValTok{0}\NormalTok{,}
+  \AttributeTok{z\_mania =} \DecValTok{0}\NormalTok{,}
+  \AttributeTok{z\_anxiety =} \DecValTok{0}\NormalTok{,}
+  \AttributeTok{z\_loneliness =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\# Add DOSPERT terms at the mean for prediction.}
+\ControlFlowTok{for}\NormalTok{ (term }\ControlFlowTok{in}\NormalTok{ primary\_dospert\_terms) \{}
+\NormalTok{  newdat\_primary[[term]] }\OtherTok{\textless{}{-}} \DecValTok{0}
+\NormalTok{\}}
+
+\NormalTok{newdat\_primary}\SpecialCharTok{$}\NormalTok{pred\_prob }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(m4\_primary, }\AttributeTok{newdata =}\NormalTok{ newdat\_primary, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{newdat\_primary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    z_neigh_disadv gender               income z_age z_reward z_depression
+## 1               0   Male Below Median (<$40k)    -1       -1            0
+## 2               0   Male Below Median (<$40k)     0       -1            0
+## 3               0   Male Below Median (<$40k)     1       -1            0
+## 4               0   Male Below Median (<$40k)    -1        0            0
+## 5               0   Male Below Median (<$40k)     0        0            0
+## 6               0   Male Below Median (<$40k)     1        0            0
+## 7               0   Male Below Median (<$40k)    -1        1            0
+## 8               0   Male Below Median (<$40k)     0        1            0
+## 9               0   Male Below Median (<$40k)     1        1            0
+## 10              0   Male Below Median (<$40k)    -1       -1            0
+## 11              0   Male Below Median (<$40k)     0       -1            0
+## 12              0   Male Below Median (<$40k)     1       -1            0
+## 13              0   Male Below Median (<$40k)    -1        0            0
+## 14              0   Male Below Median (<$40k)     0        0            0
+## 15              0   Male Below Median (<$40k)     1        0            0
+## 16              0   Male Below Median (<$40k)    -1        1            0
+## 17              0   Male Below Median (<$40k)     0        1            0
+## 18              0   Male Below Median (<$40k)     1        1            0
+## 19              0   Male Below Median (<$40k)    -1       -1            0
+## 20              0   Male Below Median (<$40k)     0       -1            0
+## 21              0   Male Below Median (<$40k)     1       -1            0
+## 22              0   Male Below Median (<$40k)    -1        0            0
+## 23              0   Male Below Median (<$40k)     0        0            0
+## 24              0   Male Below Median (<$40k)     1        0            0
+## 25              0   Male Below Median (<$40k)    -1        1            0
+## 26              0   Male Below Median (<$40k)     0        1            0
+## 27              0   Male Below Median (<$40k)     1        1            0
+##    z_mania z_anxiety z_loneliness z_dospert_hs z_dospert_soc z_dospert_ethic
+## 1        0         0           -1            0             0               0
+## 2        0         0           -1            0             0               0
+## 3        0         0           -1            0             0               0
+## 4        0         0           -1            0             0               0
+## 5        0         0           -1            0             0               0
+## 6        0         0           -1            0             0               0
+## 7        0         0           -1            0             0               0
+## 8        0         0           -1            0             0               0
+## 9        0         0           -1            0             0               0
+## 10       0         0            0            0             0               0
+## 11       0         0            0            0             0               0
+## 12       0         0            0            0             0               0
+## 13       0         0            0            0             0               0
+## 14       0         0            0            0             0               0
+## 15       0         0            0            0             0               0
+## 16       0         0            0            0             0               0
+## 17       0         0            0            0             0               0
+## 18       0         0            0            0             0               0
+## 19       0         0            1            0             0               0
+## 20       0         0            1            0             0               0
+## 21       0         0            1            0             0               0
+## 22       0         0            1            0             0               0
+## 23       0         0            1            0             0               0
+## 24       0         0            1            0             0               0
+## 25       0         0            1            0             0               0
+## 26       0         0            1            0             0               0
+## 27       0         0            1            0             0               0
+##    z_dospert_rec  pred_prob
+## 1              0 0.23320883
+## 2              0 0.13309828
+## 3              0 0.07193122
+## 4              0 0.36219143
+## 5              0 0.22655409
+## 6              0 0.13125830
+## 7              0 0.51463321
+## 8              0 0.35849410
+## 9              0 0.22752106
+## 10             0 0.19319498
+## 11             0 0.10784549
+## 12             0 0.05751374
+## 13             0 0.30405682
+## 14             0 0.18391270
+## 15             0 0.10413824
+## 16             0 0.44356037
+## 17             0 0.29584132
+## 18             0 0.18128936
+## 19             0 0.15862641
+## 20             0 0.08690363
+## 21             0 0.04584328
+## 22             0 0.25157279
+## 23             0 0.14776385
+## 24             0 0.08209212
+## 25             0 0.37472500
+## 26             0 0.24004098
+## 27             0 0.14271625
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{newdat\_primary }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(z\_age }\SpecialCharTok{==} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Reward =} \FunctionTok{factor}\NormalTok{(z\_reward, }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low ({-}1 SD)"}\NormalTok{, }\StringTok{"Mean"}\NormalTok{, }\StringTok{"High (+1 SD)"}\NormalTok{)),}
+    \AttributeTok{Loneliness =} \FunctionTok{factor}\NormalTok{(z\_loneliness, }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low ({-}1 SD)"}\NormalTok{, }\StringTok{"Mean"}\NormalTok{, }\StringTok{"High (+1 SD)"}\NormalTok{))}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Reward, }\AttributeTok{y =}\NormalTok{ pred\_prob, }\AttributeTok{group =}\NormalTok{ Loneliness, }\AttributeTok{color =}\NormalTok{ Loneliness)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\NormalTok{percent, }\AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{x =} \StringTok{"Reward sensitivity"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Predicted P(PG)"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Loneliness"}\NormalTok{,}
+    \AttributeTok{title =} \StringTok{"Primary model: Reward sensitivity × loneliness"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{13}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{logit_hierarchical_revised_v3_files/figure-latex/interaction-plot-primary-1.pdf}}
+
+\subsection{Secondary analysis: severity within PG
+only}\label{secondary-analysis-severity-within-pg-only}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dat\_pg }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(pg\_group }\SpecialCharTok{==} \StringTok{"PG"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{drop\_na}\NormalTok{(}
+\NormalTok{    gender, income\_median\_split,}
+\NormalTok{    TotalCrime, unemployed, Gini,}
+\NormalTok{    demo\_yrs,}
+\NormalTok{    rew\_composite,}
+\NormalTok{    dospert\_gam, dospert\_inv, dospert\_hs, dospert\_soc, dospert\_ethic, dospert\_rec,}
+\NormalTok{    susd\_depression, susd\_mania, scared\_total, uclal\_total,}
+\NormalTok{    gsas\_total}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{income =}\NormalTok{ income\_median\_split,}
+    \AttributeTok{z\_crime =} \FunctionTok{z\_score}\NormalTok{(TotalCrime),}
+    \AttributeTok{z\_unemp =} \FunctionTok{z\_score}\NormalTok{(unemployed),}
+    \AttributeTok{z\_gini  =} \FunctionTok{z\_score}\NormalTok{(Gini),}
+    \AttributeTok{z\_neigh\_disadv =} \FunctionTok{rowMeans}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(z\_crime, z\_unemp, z\_gini), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{z\_age =} \FunctionTok{z\_score}\NormalTok{(demo\_yrs),}
+    \AttributeTok{z\_reward =} \FunctionTok{z\_score}\NormalTok{(rew\_composite),}
+    \AttributeTok{z\_dospert\_gam   =} \FunctionTok{z\_score}\NormalTok{(dospert\_gam),}
+    \AttributeTok{z\_dospert\_inv   =} \FunctionTok{z\_score}\NormalTok{(dospert\_inv),}
+    \AttributeTok{z\_dospert\_hs    =} \FunctionTok{z\_score}\NormalTok{(dospert\_hs),}
+    \AttributeTok{z\_dospert\_soc   =} \FunctionTok{z\_score}\NormalTok{(dospert\_soc),}
+    \AttributeTok{z\_dospert\_ethic =} \FunctionTok{z\_score}\NormalTok{(dospert\_ethic),}
+    \AttributeTok{z\_dospert\_rec   =} \FunctionTok{z\_score}\NormalTok{(dospert\_rec),}
+    \AttributeTok{dospert\_nongam\_primary\_raw =} \ControlFlowTok{if}\NormalTok{ (include\_investment\_primary) \{}
+      \FunctionTok{rowMeans}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(dospert\_hs, dospert\_soc, dospert\_ethic, dospert\_rec, dospert\_inv), }\AttributeTok{na.rm =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+      \FunctionTok{rowMeans}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(dospert\_hs, dospert\_soc, dospert\_ethic, dospert\_rec), }\AttributeTok{na.rm =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{    \},}
+    \AttributeTok{z\_dospert\_nongam\_comp =} \FunctionTok{z\_score}\NormalTok{(dospert\_nongam\_primary\_raw),}
+    \AttributeTok{z\_depression =} \FunctionTok{z\_score}\NormalTok{(susd\_depression),}
+    \AttributeTok{z\_mania      =} \FunctionTok{z\_score}\NormalTok{(susd\_mania),}
+    \AttributeTok{z\_anxiety    =} \FunctionTok{z\_score}\NormalTok{(scared\_total),}
+    \AttributeTok{z\_loneliness =} \FunctionTok{z\_score}\NormalTok{(uclal\_total),}
+    \AttributeTok{z\_gsas\_total =} \FunctionTok{z\_score}\NormalTok{(gsas\_total)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(gender }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Male"}\NormalTok{, }\StringTok{"Female"}\NormalTok{))}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"PG severity analytic N ="}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(dat\_pg), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## PG severity analytic N = 197
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Severity models mirror the logistic structure, but the outcome is GSAS total.}
+\NormalTok{severity\_formula\_1 }\OtherTok{\textless{}{-}} \FunctionTok{make\_formula}\NormalTok{(}\StringTok{"gsas\_total"}\NormalTok{, }\FunctionTok{list}\NormalTok{(block\_1))}
+\NormalTok{severity\_formula\_2 }\OtherTok{\textless{}{-}} \FunctionTok{make\_formula}\NormalTok{(}\StringTok{"gsas\_total"}\NormalTok{, }\FunctionTok{list}\NormalTok{(block\_1, block\_2\_primary))}
+\NormalTok{severity\_formula\_3 }\OtherTok{\textless{}{-}} \FunctionTok{make\_formula}\NormalTok{(}\StringTok{"gsas\_total"}\NormalTok{, }\FunctionTok{list}\NormalTok{(block\_1, block\_2\_primary, block\_3))}
+\NormalTok{severity\_formula\_4 }\OtherTok{\textless{}{-}} \FunctionTok{make\_formula}\NormalTok{(}\StringTok{"gsas\_total"}\NormalTok{, }\FunctionTok{list}\NormalTok{(block\_1, block\_2\_primary, block\_3), }\AttributeTok{interactions =}\NormalTok{ block\_4\_interactions)}
+
+\NormalTok{s1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(severity\_formula\_1, }\AttributeTok{data =}\NormalTok{ dat\_pg)}
+\NormalTok{s2 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(severity\_formula\_2, }\AttributeTok{data =}\NormalTok{ dat\_pg)}
+\NormalTok{s3 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(severity\_formula\_3, }\AttributeTok{data =}\NormalTok{ dat\_pg)}
+\NormalTok{s4 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(severity\_formula\_4, }\AttributeTok{data =}\NormalTok{ dat\_pg)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{anova}\NormalTok{(s1, s2, s3, s4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Variance Table
+## 
+## Model 1: gsas_total ~ z_neigh_disadv + gender + z_age + income
+## Model 2: gsas_total ~ z_neigh_disadv + gender + z_age + income + z_reward + 
+##     z_dospert_hs + z_dospert_soc + z_dospert_ethic + z_dospert_rec
+## Model 3: gsas_total ~ z_neigh_disadv + gender + z_age + income + z_reward + 
+##     z_dospert_hs + z_dospert_soc + z_dospert_ethic + z_dospert_rec + 
+##     z_depression + z_mania + z_anxiety + z_loneliness
+## Model 4: gsas_total ~ z_neigh_disadv + gender + z_age + income + z_reward + 
+##     z_dospert_hs + z_dospert_soc + z_dospert_ethic + z_dospert_rec + 
+##     z_depression + z_mania + z_anxiety + z_loneliness + z_reward:z_loneliness + 
+##     z_reward:z_age
+##   Res.Df     RSS Df Sum of Sq      F    Pr(>F)    
+## 1    192 11334.5                                  
+## 2    187 10362.6  5    971.89 4.0804  0.001557 ** 
+## 3    183  8854.8  4   1507.79 7.9130 6.704e-06 ***
+## 4    181  8622.2  2    232.61 2.4415  0.089888 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{AIC}\NormalTok{(s1, s2, s3, s4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    df      AIC
+## s1  6 1369.385
+## s2 11 1361.725
+## s3 15 1338.748
+## s4 17 1337.504
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{BIC}\NormalTok{(s1, s2, s3, s4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    df      BIC
+## s1  6 1389.085
+## s2 11 1397.840
+## s3 15 1387.996
+## s4 17 1393.318
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(s4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = severity_formula_4, data = dat_pg)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -23.2102  -3.1100   0.0606   3.6438  22.4093 
+## 
+## Coefficients:
+##                            Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                21.19001    1.10307  19.210  < 2e-16 ***
+## z_neigh_disadv             -0.70270    0.71767  -0.979 0.328824    
+## genderFemale               -2.21418    1.18202  -1.873 0.062652 .  
+## z_age                      -0.44189    0.54859  -0.806 0.421580    
+## incomeAbove Median (≥$40k)  4.06445    1.19751   3.394 0.000846 ***
+## z_reward                    0.81406    0.63599   1.280 0.202184    
+## z_dospert_hs               -1.89266    1.13043  -1.674 0.095802 .  
+## z_dospert_soc               0.45422    1.16993   0.388 0.698291    
+## z_dospert_ethic            -0.65065    1.20069  -0.542 0.588554    
+## z_dospert_rec               1.91660    1.04988   1.826 0.069567 .  
+## z_depression                4.02118    0.83345   4.825 2.97e-06 ***
+## z_mania                    -1.68268    0.80148  -2.099 0.037163 *  
+## z_anxiety                   0.11809    0.66606   0.177 0.859472    
+## z_loneliness                0.06785    0.57203   0.119 0.905716    
+## z_reward:z_loneliness       1.10112    0.52721   2.089 0.038145 *  
+## z_age:z_reward             -0.10047    0.41199  -0.244 0.807610    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 6.902 on 181 degrees of freedom
+## Multiple R-squared:  0.3062, Adjusted R-squared:  0.2487 
+## F-statistic: 5.324 on 15 and 181 DF,  p-value: 8.452e-09
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{show\_vif}\NormalTok{(s3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  z_neigh_disadv          gender           z_age          income        z_reward 
+##        1.087100        1.149250        1.093192        1.191383        1.635341 
+##    z_dospert_hs   z_dospert_soc z_dospert_ethic   z_dospert_rec    z_depression 
+##        5.123517        5.595457        5.764050        4.449129        2.837416 
+##         z_mania       z_anxiety    z_loneliness 
+##        2.635417        1.810040        1.333760
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{show\_vif\_predictor}\NormalTok{(s4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                     GVIF Df GVIF^(1/(2*Df))      Interacts With
+## z_neigh_disadv  1.110675  1        1.053886                --  
+## gender          1.162779  1        1.078322                --  
+## z_age           2.173579  3        1.138141            z_reward
+## income          1.193447  1        1.092450                --  
+## z_reward        2.737080  5        1.105933 z_loneliness, z_age
+## z_dospert_hs    5.257768  1        2.292982                --  
+## z_dospert_soc   5.631691  1        2.373118                --  
+## z_dospert_ethic 5.931648  1        2.435497                --  
+## z_dospert_rec   4.535186  1        2.129598                --  
+## z_depression    2.858060  1        1.690580                --  
+## z_mania         2.643039  1        1.625743                --  
+## z_anxiety       1.825354  1        1.351057                --  
+## z_loneliness    2.530829  3        1.167375            z_reward
+##                                                                                                                                                     Other Predictors
+## z_neigh_disadv          gender, z_age, income, z_reward, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_anxiety, z_loneliness
+## gender          z_neigh_disadv, z_age, income, z_reward, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_anxiety, z_loneliness
+## z_age                    z_neigh_disadv, gender, income, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_anxiety, z_loneliness
+## income          z_neigh_disadv, gender, z_age, z_reward, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_anxiety, z_loneliness
+## z_reward                               z_neigh_disadv, gender, income, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_anxiety
+## z_dospert_hs          z_neigh_disadv, gender, z_age, income, z_reward, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_anxiety, z_loneliness
+## z_dospert_soc          z_neigh_disadv, gender, z_age, income, z_reward, z_dospert_hs, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_anxiety, z_loneliness
+## z_dospert_ethic          z_neigh_disadv, gender, z_age, income, z_reward, z_dospert_hs, z_dospert_soc, z_dospert_rec, z_depression, z_mania, z_anxiety, z_loneliness
+## z_dospert_rec          z_neigh_disadv, gender, z_age, income, z_reward, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_depression, z_mania, z_anxiety, z_loneliness
+## z_depression          z_neigh_disadv, gender, z_age, income, z_reward, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_mania, z_anxiety, z_loneliness
+## z_mania          z_neigh_disadv, gender, z_age, income, z_reward, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_anxiety, z_loneliness
+## z_anxiety          z_neigh_disadv, gender, z_age, income, z_reward, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_loneliness
+## z_loneliness                    z_neigh_disadv, gender, z_age, income, z_dospert_hs, z_dospert_soc, z_dospert_ethic, z_dospert_rec, z_depression, z_mania, z_anxiety
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{coef\_table}\NormalTok{(s4, }\AttributeTok{exponentiate =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(estimate, std.error, conf.low, conf.high), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{round}\NormalTok{(., }\DecValTok{3}\NormalTok{)),}
+    \AttributeTok{p.value =} \FunctionTok{round}\NormalTok{(p.value, }\DecValTok{3}\NormalTok{),}
+    \AttributeTok{sig =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}}\NormalTok{ .}\DecValTok{001} \SpecialCharTok{\textasciitilde{}} \StringTok{"***"}\NormalTok{,}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}}\NormalTok{ .}\DecValTok{01}  \SpecialCharTok{\textasciitilde{}} \StringTok{"**"}\NormalTok{,}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}}\NormalTok{ .}\DecValTok{05}  \SpecialCharTok{\textasciitilde{}} \StringTok{"*"}\NormalTok{,}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}}\NormalTok{ .}\DecValTok{10}  \SpecialCharTok{\textasciitilde{}} \StringTok{"."}\NormalTok{,}
+      \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{""}
+\NormalTok{    )}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.3068}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1023}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1136}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.0909}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1023}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1136}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.0455}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+term
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+std.error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+statistic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p.value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+conf.low
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+conf.high
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+(Intercept) & 21.190 & 1.103 & 19.2099617 & 0.000 & 19.013 & 23.367 &
+*** \\
+z\_neigh\_disadv & -0.703 & 0.718 & -0.9791279 & 0.329 & -2.119 & 0.713
+& \\
+genderFemale & -2.214 & 1.182 & -1.8732102 & 0.063 & -4.547 & 0.118 &
+. \\
+z\_age & -0.442 & 0.549 & -0.8055141 & 0.422 & -1.524 & 0.641 & \\
+incomeAbove Median (≥\$40k) & 4.064 & 1.198 & 3.3940809 & 0.001 & 1.702
+& 6.427 & ** \\
+z\_reward & 0.814 & 0.636 & 1.2799991 & 0.202 & -0.441 & 2.069 & \\
+z\_dospert\_hs & -1.893 & 1.130 & -1.6742852 & 0.096 & -4.123 & 0.338 &
+. \\
+z\_dospert\_soc & 0.454 & 1.170 & 0.3882453 & 0.698 & -1.854 & 2.763
+& \\
+z\_dospert\_ethic & -0.651 & 1.201 & -0.5418992 & 0.589 & -3.020 & 1.718
+& \\
+z\_dospert\_rec & 1.917 & 1.050 & 1.8255429 & 0.070 & -0.155 & 3.988 &
+. \\
+z\_depression & 4.021 & 0.833 & 4.8247555 & 0.000 & 2.377 & 5.666 &
+*** \\
+z\_mania & -1.683 & 0.801 & -2.0994619 & 0.037 & -3.264 & -0.101 & * \\
+z\_anxiety & 0.118 & 0.666 & 0.1772991 & 0.859 & -1.196 & 1.432 & \\
+z\_loneliness & 0.068 & 0.572 & 0.1186099 & 0.906 & -1.061 & 1.197 & \\
+z\_reward:z\_loneliness & 1.101 & 0.527 & 2.0885723 & 0.038 & 0.061 &
+2.141 & * \\
+z\_age:z\_reward & -0.100 & 0.412 & -0.2438672 & 0.808 & -0.913 & 0.712
+& \\
+\end{longtable}
+
+\subsection{Notes for interpretation}\label{notes-for-interpretation}
+
+Suggested read of this notebook:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Start with the primary logistic model using non-gambling DOSPERT
+  domains.
+\item
+  Check whether Block 4 materially improves fit. If not, the
+  main-effects model may be the cleaner result to report.
+\item
+  Compare the primary model with the non-gambling composite and
+  exploratory gambling-domain models.
+\item
+  Treat the severity models as a different question: what predicts
+  symptom burden among PG cases, not what distinguishes cases from
+  controls.
+\item
+  If investment/financial risk looks too gambling-adjacent, keep
+  include\_investment\_primary = FALSE.
+\end{enumerate}
+
+\end{document}
